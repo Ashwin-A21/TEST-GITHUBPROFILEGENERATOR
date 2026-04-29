@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="midnight">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Readme Architect | Ultimate GitHub Profile Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            /* Midnight (Default) */
+            --bg-dark: #0f111a;
+            --bg-panel: rgba(15, 17, 26, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.25);
+            --secondary: #a855f7;
+            --accent: #ec4899;
+        }
+
+        /* Cyberpunk Theme */
+        [data-theme="cyberpunk"] {
+            --bg-dark: #09090b;
+            --bg-panel: rgba(20, 20, 20, 0.8);
+            --border-color: rgba(253, 224, 71, 0.2);
+            --text-main: #fef08a;
+            --text-muted: #a1a1aa;
+            --primary: #fde047;
+            --primary-glow: rgba(253, 224, 71, 0.25);
+            --secondary: #06b6d4;
+            --accent: #ec4899;
+        }
+
+        /* Ocean Night Theme */
+        [data-theme="ocean"] {
+            --bg-dark: #0f172a;
+            --bg-panel: rgba(15, 23, 42, 0.8);
+            --border-color: rgba(56, 189, 248, 0.2);
+            --text-main: #e0f2fe;
+            --text-muted: #94a3b8;
+            --primary: #38bdf8;
+            --primary-glow: rgba(56, 189, 248, 0.25);
+            --secondary: #2dd4bf;
+            --accent: #818cf8;
+        }
+
+        /* Forest Night Theme */
+        [data-theme="forest"] {
+            --bg-dark: #022c22;
+            --bg-panel: rgba(6, 78, 59, 0.8);
+            --border-color: rgba(52, 211, 153, 0.2);
+            --text-main: #ecfdf5;
+            --text-muted: #a7f3d0;
+            --primary: #34d399;
+            --primary-glow: rgba(52, 211, 153, 0.25);
+            --secondary: #10b981;
+            --accent: #059669;
+        }
+
+        /* Light Theme */
+        [data-theme="light"] {
+            --bg-dark: #f8fafc;
+            --bg-panel: rgba(255, 255, 255, 0.9);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --primary: #4f46e5;
+            --primary-glow: rgba(79, 70, 229, 0.25);
+            --secondary: #7c3aed;
+            --accent: #e11d48;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(140px);
+            z-index: -1;
+            opacity: 0.4;
+            pointer-events: none;
+            transition: background-color 0.4s ease;
+        }
+        .glow-1 { top: -20%; left: -10%; width: 60vw; height: 60vw; background: var(--primary); }
+        .glow-2 { bottom: -20%; right: -10%; width: 50vw; height: 50vw; background: var(--secondary); }
+
+        .container {
+            display: flex;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 2rem;
+            gap: 2rem;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .left-panel {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            overflow-y: auto;
+            padding-right: 1rem;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
+            padding-bottom: 4rem;
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: var(--bg-panel);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            height: 100%;
+            box-sizing: border-box;
+            transition: all 0.4s ease;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--text-main), var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            letter-spacing: -1px;
+        }
+        .brand-highlight {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .theme-switcher {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(128, 128, 128, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .theme-switcher select {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            padding: 0;
+            width: auto;
+            box-shadow: none;
+        }
+
+        .accordion {
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .accordion:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .accordion-header {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .accordion-header h3 {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .accordion-header .icon {
+            width: 28px;
+            height: 28px;
+            background: rgba(128, 128, 128, 0.15);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .accordion-header span.toggle-icon {
+            transition: transform 0.3s ease;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .accordion.open .accordion-header span.toggle-icon {
+            transform: rotate(45deg);
+            color: var(--text-main);
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 0 1.5rem 1.5rem 1.5rem;
+        }
+
+        .accordion.open .accordion-content {
+            display: block;
+            animation: slideDown 0.3s ease-out forwards;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"], input[type="url"], input[type="number"], .form-group select, textarea {
+            background: rgba(128, 128, 128, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.875rem 1rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus, input[type="url"]:focus, input[type="number"]:focus, .form-group select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+            background: rgba(128, 128, 128, 0.15);
+        }
+        
+        .form-group select option {
+            background: var(--bg-dark);
+            color: var(--text-main);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Toggle Switch */
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: rgba(128, 128, 128, 0.05);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 0.75rem;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(128,128,128,0.3);
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Skills */
+        .skill-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-category h4 {
+            color: var(--text-main);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            margin-top: 0;
+        }
+
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .skill-checkbox {
+            display: none;
+        }
+
+        .skill-label {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(128, 128, 128, 0.1);
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .skill-label:hover {
+            background: rgba(128, 128, 128, 0.2);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .skill-checkbox:checked + .skill-label {
+            background: var(--primary-glow);
+            border-color: var(--primary);
+            color: var(--text-main);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        /* Sortable List */
+        .sortable-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sortable-list li {
+            background: rgba(128, 128, 128, 0.05);
+            border: 1px solid var(--border-color);
+            margin-bottom: 0.5rem;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 500;
+            transition: background 0.2s;
+            user-select: none;
+        }
+
+        .sortable-list li:active {
+            cursor: grabbing;
+        }
+
+        .sortable-list li:hover {
+            background: rgba(128, 128, 128, 0.1);
+        }
+
+        .drag-handle {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: grab;
+            user-select: none;
+        }
+
+        .remove-section {
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+            margin-left: auto;
+        }
+
+        .remove-section:hover {
+            color: var(--accent);
+        }
+
+        .sortable-list li.dragging {
+            opacity: 0.5;
+            background: var(--primary-glow);
+            border-color: var(--primary);
+        }
+
+        .text-sm { font-size: 0.85rem; }
+        .text-muted { color: var(--text-muted); margin-bottom: 1rem; }
+
+        /* Right Panel */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            background: rgba(128,128,128,0.1);
+            padding: 0.5rem;
+            border-radius: 12px;
+        }
+
+        .tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .tab:hover {
+            color: var(--text-main);
+            background: rgba(128,128,128,0.1);
+        }
+
+        .tab.active {
+            color: #ffffff !important;
+            background: var(--primary) !important;
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        .output-area {
+            display: none;
+            background: #0d1117;
+            border-radius: 12px;
+            padding: 1.5rem;
+            flex-grow: 1;
+            overflow-y: auto;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border: 1px solid var(--border-color);
+            color: #c9d1d9;
+        }
+
+        .preview-area {
+            display: none;
+            background: #0d1117;
+            border-radius: 12px;
+            padding: 2rem;
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            color: #c9d1d9;
+        }
+
+        /* Make preview and output themes static so GitHub colors mimic GitHub Dark */
+        [data-theme="light"] .output-area, [data-theme="light"] .preview-area {
+            background: #ffffff;
+            color: #24292f;
+            border-color: #d0d7de;
+        }
+        [data-theme="light"] .preview-area h1, [data-theme="light"] .preview-area h2, [data-theme="light"] .preview-area h3 {
+            border-bottom: 1px solid #d0d7de;
+            color: #24292f;
+        }
+        [data-theme="light"] .preview-area h4 {
+            color: #24292f;
+        }
+        [data-theme="light"] .preview-area a { color: #0969da; }
+
+        .preview-area.active, .output-area.active {
+            display: block;
+        }
+
+        .preview-area h1, .preview-area h2, .preview-area h3, .preview-area h4 {
+            border-bottom: 1px solid #21262d;
+            padding-bottom: 0.3em;
+            margin-top: 24px;
+            margin-bottom: 16px;
+            background: none;
+            -webkit-text-fill-color: initial;
+            color: #c9d1d9;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+        }
+        .preview-area h4 {
+            border-bottom: none;
+            font-size: 1.1em;
+            margin-top: 16px;
+            margin-bottom: 12px;
+        }
+        .preview-area p, .preview-area div {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+        }
+        .preview-area img {
+            max-width: 100%;
+        }
+        .preview-area a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        .preview-area a:hover {
+            text-decoration: underline;
+        }
+        .preview-area ul {
+            padding-left: 2em;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .preview-area li {
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px var(--primary-glow);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(128,128,128,0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(128,128,128,0.4); }
+    </style>
+</head>
+<body>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    
+    <div class="container">
+        <div class="left-panel">
+            <div class="top-bar">
+                <div>
+                    <h1>Readme <span class="brand-highlight">Architect</span></h1>
+                    <p class="subtitle">Build a highly customized GitHub profile in minutes.</p>
+                </div>
+                <div class="theme-switcher">
+                    <span>🎨 UI Theme:</span>
+                    <select onchange="document.documentElement.setAttribute('data-theme', this.value)">
+                        <option value="midnight">Midnight Dark</option>
+                        <option value="cyberpunk">Cyberpunk</option>
+                        <option value="ocean">Ocean Night</option>
+                        <option value="forest">Forest Night</option>
+                        <option value="light">Clean Light</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="accordion open">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3><div class="icon">✨</div> Global Design & Layout</h3>
+                    <span class="toggle-icon">+</span>
+                </div>
+                <div class="accordion-content">
+                    <p class="text-sm text-muted">Customize the overall style and color mapping of your README badges.</p>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>General Alignment</label>
+                            <select id="global-align" onchange="updateState()">
+                                <option value="center">Center</option>
+                                <option value="left">Left</option>
+                                <option value="right">Right</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Global Badge Style</label>
+                            <select id="global-badge" onchange="updateState()">
+                                <option value="for-the-badge">For The Badge</option>
+                                <option value="flat">Flat</option>
+                                <option value="flat-square">Flat Square</option>
+                                <option value="plastic">Plastic</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Uniform Badge Color (Hex without #)</label>
+                            <input type="text" id="global-badge-color" placeholder="Leave empty for brand colors" oninput="updateState()">
+                        </div>
+                        <div class="form-group">
+                            <label>Profile Views Color</label>
+                            <select id="global-views-color" onchange="updateState()">
+                                <option value="0e75b6">Blue</option>
+                                <option value="green">Green</option>
+                                <option value="red">Red</option>
+                                <option value="yellow">Yellow</option>
+                                <option value="orange">Orange</option>
+                                <option value="purple">Purple</option>
+                                <option value="pink">Pink</option>
+                                <option value="000000">Black</option>
+                                <option value="ffffff">White</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3><div class="icon">🔀</div> Section Ordering</h3>
+                    <span class="toggle-icon">+</span>
+                </div>
+                <div class="accordion-content">
+                    <p class="text-sm text-muted">Drag and drop to reorder. Click × to remove a section entirely.</p>
+                    <ul id="sortable-sections" class="sortable-list">
+                        <!-- Populated dynamically via JS -->
+                    </ul>
+                    <div id="add-section-container" style="margin-top: 1rem; display: none; gap: 0.5rem; align-items: center;">
+                        <select id="add-section-select" style="flex: 1; padding: 0.6rem; margin: 0;">
+                            <option value="">+ Add Section...</option>
+                        </select>
+                        <button class="btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem; margin-top: 0;" onclick="addSection()">Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3><div class="icon">🖼️</div> Dynamic Header</h3>
+                    <span class="toggle-icon">+</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="form-group">
+                        <label>Header / Animation Type</label>
+                        <select id="header-type" onchange="updateState()">
+                            <option value="typing">Animated Typing SVG</option>
+                            <option value="capsule">Capsule Render Banner</option>
+                            <option value="text">Standard Text</option>
+                            <option value="image">Custom Image URL</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Main Title / Greeting</label>
+                        <input type="text" id="header-title" placeholder="Hi 👋, I'm John Doe" oninput="updateState()">
+                    </div>
+                    <div class="form-group">
+                        <label>Subtitle / Tagline</label>
+                        <input type="text" id="header-subtitle" placeholder="A passionate developer" oninput="updateState()">
+                    </div>
+                    
+                    <div id="header-typing-options">
+                        <div class="form-group">
+                            <label>Typing Lines (comma separated)</label>
+                            <input type="text" id="header-typing-lines" placeholder="Full Stack Developer, Open Source Contributor" oninput="updateState()">
+                        </div>
+                        <div class="form-group">
+                            <label>Typing Font Color (Hex without #)</label>
+                            <input type="text" id="header-typing-color" placeholder="36BCF7" oninput="updateState()">
+                        </div>
+                    </div>
+                    
+                    <div id="header-capsule-options" style="display:none;">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Capsule Shape</label>
+                                <select id="header-capsule-type" onchange="updateState()">
+                                    <option value="waving">Waving</option>
+                                    <option value="wave">Wave</option>
+                                    <option value="cylinder">Cylinder</option>
+                                    <option value="rect">Rectangle</option>
+                                    <option value="transparent">Transparent</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Capsule Theme</label>
+                                <select id="header-capsule-theme" onchange="updateState()">
+                                    <option value="gradient">Gradient</option>
+                                    <option value="timeGradient">Time Gradient</option>
+                                    <option value="random">Random</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="header-image-options" style="display:none;">
+                        <div class="form-group">
+                            <label>Custom Header Image URL (GIF/PNG)</label>
+                            <input type="url" id="header-image-url" placeholder="https://..." oninput="updateState()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3><div class="icon">📝</div> About Me</h3>
+                    <span class="toggle-icon">+</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>🔭 Currently working on</label>
+                            <input type="text" id="abt-working" placeholder="Project Name" oninput="updateState()">
+                        </div>
+                        <div class="form-group">
+                            <label>🌱 Currently learning</label>
+                            <input type="text" id="abt-learning" placeholder="Framework / Language" oninput="updateState()">
+                        </div>
+                        <div class="form-group">
+                            <label>👯 Looking to collaborate on</label>
+                            <input type="text" id="abt-collaborate" placeholder="Open source projects" oninput="updateState()">
+                        </div>
+                        <div class="form-group">
+                            <label>🤔 Looking for help with</label>
+                            <input type="text" id="abt-help" placeholder="Algorithms" oninput="updateState()">
+                        </div>
+                        <div class="form-group">
+                            <label>💬 Ask me about</label>
+                            <input type="text" id="abt-ask" placeholder="React, Node.js" oninput="updateState()">
+                        </div>
+                        <div class="form-group">
+                            <label>📫 How to reach me</label>
+                            <input type="text" id="abt-reach" placeholder="email@example.com" oninput="updateState()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3><div class="icon">🔗</div> Social Links</h3>
+                    <span class="toggle-icon">+</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>GitHub Username</label>
+                            <input type="text" id="soc-github" placeholder="username" oninput="updateState()">
+                        </div>
+                        <div class="form-group">
+                            <label>LinkedIn Username</label>
+                            <input type="text" id="soc-linkedin" placeholder="username" oninput="updateState()">
+                        </div>
+                        <div class="form-group">
+                            <label>Twitter/X Username</label>
+                            <input type="text" id="soc-twitter" placeholder="username" oninput="updateState()">
+                        </div>
+                        <div class="form-group">
+                            <label>Medium Username</label>
+                            <input type="text" id="soc-medium" placeholder="username" oninput="updateState()">
+                        </div>
+                        <div class="form-group">
+                            <label>YouTube Channel Code</label>
+                            <input type="text" id="soc-youtube" placeholder="c/username" oninput="updateState()">
+                        </div>
+                        <div class="form-group">
+                            <label>Discord Server Link</label>
+                            <input type="text" id="soc-discord" placeholder="invitecode" oninput="updateState()">
+                        </div>
+                        <div class="form-group">
+                            <label>Portfolio URL</label>
+                            <input type="url" id="soc-portfolio" placeholder="https://..." oninput="updateState()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3><div class="icon">🛠</div> Tech Stack</h3>
+                    <span class="toggle-icon">+</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="grid-3" style="margin-bottom: 1.5rem;">
+                        <div class="form-group">
+                            <label>Layout Style</label>
+                            <select id="skills-layout" onchange="updateState()">
+                                <option value="flat">Flat (All Together)</option>
+                                <option value="categorized">Categorized (Grouped with Headers)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Badge Display Style</label>
+                            <select id="skills-style" onchange="updateState()">
+                                <option value="shields">Badges with Text</option>
+                                <option value="skillicons-dark">Icons Only (Dark)</option>
+                                <option value="skillicons-light">Icons Only (Light)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="skills-size-group">
+                            <label>Badge Size (Height px)</label>
+                            <input type="number" id="skills-size" value="30" min="15" max="100" oninput="updateState()">
+                        </div>
+                    </div>
+                    <div id="skills-container">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3><div class="icon">🧩</div> Integrations (LeetCode, WakaTime)</h3>
+                    <span class="toggle-icon">+</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>LeetCode Username</label>
+                            <input type="text" id="int-leetcode" placeholder="username" oninput="updateState()">
+                        </div>
+                        <div class="form-group">
+                            <label>LeetCode Theme</label>
+                            <select id="int-leetcode-theme" onchange="updateState()">
+                                <option value="dark">Dark</option>
+                                <option value="light">Light</option>
+                                <option value="nord">Nord</option>
+                                <option value="dracula">Dracula</option>
+                                <option value="monokai">Monokai</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>WakaTime Username (Must be public)</label>
+                            <input type="text" id="int-wakatime" placeholder="username" oninput="updateState()">
+                        </div>
+                        <div class="form-group">
+                            <label>Medium Blog Username</label>
+                            <input type="text" id="int-medium" placeholder="username" oninput="updateState()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3><div class="icon">📈</div> GitHub Stats & Trophies</h3>
+                    <span class="toggle-icon">+</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="form-group">
+                        <label>GitHub Username (Required for stats)</label>
+                        <input type="text" id="stat-username" placeholder="username" oninput="updateState()">
+                    </div>
+                    <div class="form-group">
+                        <label>GitHub Stats Theme</label>
+                        <select id="stat-theme" onchange="updateState()">
+                            <option value="tokyonight">Tokyo Night</option>
+                            <option value="radical">Radical</option>
+                            <option value="dark">Dark</option>
+                            <option value="dracula">Dracula</option>
+                            <option value="onedark">One Dark</option>
+                            <option value="github_dark">GitHub Dark</option>
+                            <option value="synthwave">Synthwave</option>
+                            <option value="matrix">Matrix</option>
+                            <option value="nightowl">Night Owl</option>
+                            <option value="vue-dark">Vue Dark</option>
+                            <option value="highcontrast">High Contrast</option>
+                        </select>
+                    </div>
+                    <div class="toggle-group">
+                        <label>Show Profile Views Counter</label>
+                        <label class="switch">
+                            <input type="checkbox" id="stat-show-views" checked onchange="updateState()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-group">
+                        <label>Show GitHub Trophies</label>
+                        <label class="switch">
+                            <input type="checkbox" id="stat-show-trophies" checked onchange="updateState()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-group">
+                        <label>Show GitHub Stats Card</label>
+                        <label class="switch">
+                            <input type="checkbox" id="stat-show-stats" checked onchange="updateState()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-group">
+                        <label>Show Top Languages</label>
+                        <label class="switch">
+                            <input type="checkbox" id="stat-show-langs" checked onchange="updateState()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-group">
+                        <label>Show GitHub Streak</label>
+                        <label class="switch">
+                            <input type="checkbox" id="stat-show-streak" checked onchange="updateState()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-group">
+                        <label>Show Snake Graph <br><span style="font-size: 0.8em; color: var(--text-muted);">(Requires a custom GitHub Action setup in your repo!)</span></label>
+                        <label class="switch">
+                            <input type="checkbox" id="stat-show-snake" onchange="updateState()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3><div class="icon">✍️</div> Custom Markdown Section</h3>
+                    <span class="toggle-icon">+</span>
+                </div>
+                <div class="accordion-content">
+                    <p class="text-sm text-muted">Write any raw Markdown here. You can drag this "Custom Markdown" section anywhere in your layout!</p>
+                    <div class="form-group">
+                        <textarea id="custom-md" rows="6" placeholder="## My Custom Title&#10;Add anything here!" oninput="updateState()"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3><div class="icon">✨</div> Extra Widgets</h3>
+                    <span class="toggle-icon">+</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="toggle-group">
+                        <label>Show Random Dev Joke</label>
+                        <label class="switch">
+                            <input type="checkbox" id="extra-show-joke" checked onchange="updateState()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-group">
+                        <label>Show Daily Quote</label>
+                        <label class="switch">
+                            <input type="checkbox" id="extra-show-quote" onchange="updateState()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Quote Theme</label>
+                        <select id="extra-quote-theme" onchange="updateState()">
+                            <option value="tokyonight">Tokyo Night</option>
+                            <option value="radical">Radical</option>
+                            <option value="dark">Dark</option>
+                            <option value="algolia">Algolia</option>
+                            <option value="dracula">Dracula</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <h3><div class="icon">💝</div> Support & Footer</h3>
+                    <span class="toggle-icon">+</span>
+                </div>
+                <div class="accordion-content">
+                    <div class="form-group">
+                        <label>Buy Me A Coffee Username</label>
+                        <input type="text" id="support-bmc" placeholder="username" oninput="updateState()">
+                    </div>
+                    <div class="form-group">
+                        <label>Ko-Fi Username</label>
+                        <input type="text" id="support-kofi" placeholder="username" oninput="updateState()">
+                    </div>
+                    <div class="form-group">
+                        <label>Patreon Username</label>
+                        <input type="text" id="support-patreon" placeholder="username" oninput="updateState()">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="right-panel">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('preview')">Live Preview</button>
+                <button class="tab" onclick="switchTab('markdown')">Markdown Code</button>
+            </div>
+            
+            <div id="preview-area" class="preview-area active"></div>
+            <div id="markdown-area" class="output-area"></div>
+            
+            <button class="btn-primary" onclick="copyMarkdown()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy Markdown
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const skillsData = {
+            Frontend: [
+                { id: 'html5', name: 'HTML5', color: 'E34F26', logo: 'html5', skillicon: 'html' },
+                { id: 'css3', name: 'CSS3', color: '1572B6', logo: 'css3', skillicon: 'css' },
+                { id: 'javascript', name: 'JavaScript', color: 'F7DF1E', logo: 'javascript', skillicon: 'js' },
+                { id: 'typescript', name: 'TypeScript', color: '3178C6', logo: 'typescript', skillicon: 'ts' },
+                { id: 'react', name: 'React', color: '20232A', logo: 'react', skillicon: 'react' },
+                { id: 'nextdotjs', name: 'Next.js', color: '000000', logo: 'nextdotjs', skillicon: 'nextjs' },
+                { id: 'vuedotjs', name: 'Vue.js', color: '4FC08D', logo: 'vuedotjs', skillicon: 'vue' },
+                { id: 'angular', name: 'Angular', color: 'DD0031', logo: 'angular', skillicon: 'angular' },
+                { id: 'svelte', name: 'Svelte', color: 'FF3E00', logo: 'svelte', skillicon: 'svelte' },
+                { id: 'tailwindcss', name: 'TailwindCSS', color: '06B6D4', logo: 'tailwindcss', skillicon: 'tailwind' },
+                { id: 'sass', name: 'Sass', color: 'CC6699', logo: 'sass', skillicon: 'sass' }
+            ],
+            Backend: [
+                { id: 'nodedotjs', name: 'Node.js', color: '339933', logo: 'node.js', skillicon: 'nodejs' },
+                { id: 'express', name: 'Express.js', color: '404D59', logo: 'express', skillicon: 'express' },
+                { id: 'nestjs', name: 'NestJS', color: 'E0234E', logo: 'nestjs', skillicon: 'nestjs' },
+                { id: 'python', name: 'Python', color: '3776AB', logo: 'python', skillicon: 'python' },
+                { id: 'django', name: 'Django', color: '092E20', logo: 'django', skillicon: 'django' },
+                { id: 'flask', name: 'Flask', color: '000000', logo: 'flask', skillicon: 'flask' },
+                { id: 'fastapi', name: 'FastAPI', color: '009688', logo: 'fastapi', skillicon: 'fastapi' },
+                { id: 'java', name: 'Java', color: '007396', logo: 'java', skillicon: 'java' },
+                { id: 'spring', name: 'Spring Boot', color: '6DB33F', logo: 'spring', skillicon: 'spring' },
+                { id: 'csharp', name: 'C#', color: '239120', logo: 'csharp', skillicon: 'cs' },
+                { id: 'dotnet', name: '.NET', color: '512BD4', logo: 'dotnet', skillicon: 'dotnet' },
+                { id: 'go', name: 'Go', color: '00ADD8', logo: 'go', skillicon: 'go' },
+                { id: 'rust', name: 'Rust', color: '000000', logo: 'rust', skillicon: 'rust' },
+                { id: 'ruby', name: 'Ruby', color: 'CC342D', logo: 'ruby', skillicon: 'ruby' },
+                { id: 'php', name: 'PHP', color: '777BB4', logo: 'php', skillicon: 'php' },
+                { id: 'laravel', name: 'Laravel', color: 'FF2D20', logo: 'laravel', skillicon: 'laravel' }
+            ],
+            Mobile: [
+                { id: 'flutter', name: 'Flutter', color: '02569B', logo: 'flutter', skillicon: 'flutter' },
+                { id: 'reactnative', name: 'React Native', color: '20232A', logo: 'react', skillicon: 'react' },
+                { id: 'swift', name: 'Swift', color: 'FA7343', logo: 'swift', skillicon: 'swift' },
+                { id: 'kotlin', name: 'Kotlin', color: '0095D5', logo: 'kotlin', skillicon: 'kotlin' },
+                { id: 'android', name: 'Android', color: '3DDC84', logo: 'android', skillicon: 'android' },
+                { id: 'ios', name: 'iOS', color: '000000', logo: 'ios', skillicon: 'apple' }
+            ],
+            Databases: [
+                { id: 'mongodb', name: 'MongoDB', color: '47A248', logo: 'mongodb', skillicon: 'mongodb' },
+                { id: 'postgresql', name: 'PostgreSQL', color: '4169E1', logo: 'postgresql', skillicon: 'postgresql' },
+                { id: 'mysql', name: 'MySQL', color: '4479A1', logo: 'mysql', skillicon: 'mysql' },
+                { id: 'redis', name: 'Redis', color: 'DC382D', logo: 'redis', skillicon: 'redis' },
+                { id: 'sqlite', name: 'SQLite', color: '003B57', logo: 'sqlite', skillicon: 'sqlite' },
+                { id: 'firebase', name: 'Firebase', color: 'FFCA28', logo: 'firebase', skillicon: 'firebase' },
+                { id: 'supabase', name: 'Supabase', color: '3ECF8E', logo: 'supabase', skillicon: 'supabase' }
+            ],
+            Cloud_DevOps: [
+                { id: 'amazonaws', name: 'AWS', color: '232F3E', logo: 'amazonaws', skillicon: 'aws' },
+                { id: 'googlecloud', name: 'Google Cloud', color: '4285F4', logo: 'googlecloud', skillicon: 'gcp' },
+                { id: 'microsoftazure', name: 'Azure', color: '0089D6', logo: 'microsoftazure', skillicon: 'azure' },
+                { id: 'docker', name: 'Docker', color: '2496ED', logo: 'docker', skillicon: 'docker' },
+                { id: 'kubernetes', name: 'Kubernetes', color: '326CE5', logo: 'kubernetes', skillicon: 'kubernetes' },
+                { id: 'githubactions', name: 'GitHub Actions', color: '2088FF', logo: 'githubactions', skillicon: 'githubactions' },
+                { id: 'linux', name: 'Linux', color: 'FCC624', logo: 'linux', skillicon: 'linux' },
+                { id: 'nginx', name: 'Nginx', color: '009639', logo: 'nginx', skillicon: 'nginx' }
+            ]
+        };
+
+        const sectionNames = {
+            header: "Dynamic Header",
+            views: "Profile Views",
+            socials: "Social Links",
+            about: "About Me",
+            skills: "Tech Stack",
+            integrations: "Integrations",
+            trophies: "GitHub Trophies",
+            stats: "GitHub Stats",
+            custom: "Custom Markdown",
+            extras: "Extra Widgets",
+            support: "Support & Footer"
+        };
+
+        const defaultState = {
+            order: ['header', 'views', 'socials', 'about', 'skills', 'integrations', 'trophies', 'stats', 'custom', 'extras', 'support'],
+            global: {
+                alignment: "center",
+                badgeStyle: "for-the-badge",
+                badgeColor: "",
+                viewsColor: "0e75b6"
+            },
+            header: {
+                type: "typing",
+                title: "Hi 👋, I'm Ashwin",
+                subtitle: "A passionate full-stack developer",
+                typingLines: "Full Stack Developer, Open Source Enthusiast, Problem Solver",
+                typingColor: "36BCF7",
+                capsuleType: "waving",
+                capsuleTheme: "gradient",
+                imageUrl: ""
+            },
+            about: {
+                workingOn: "",
+                learning: "Next.js & Web3",
+                collaborateOn: "",
+                helpWith: "",
+                askMeAbout: "Web Development",
+                reachMe: "hello@ashwin.com",
+            },
+            socials: {
+                github: "ashwin",
+                linkedin: "ashwin",
+                twitter: "ashwin",
+                medium: "",
+                youtube: "",
+                discord: "",
+                portfolio: "https://ashwin.com"
+            },
+            skills: new Set(['html5', 'css3', 'javascript', 'react', 'nodedotjs', 'tailwindcss', 'python', 'docker']),
+            skillsConfig: {
+                style: "shields",
+                size: 30,
+                layout: "flat"
+            },
+            integrations: {
+                leetcodeUsername: "",
+                leetcodeTheme: "dark",
+                wakatimeUsername: "",
+                mediumUsername: ""
+            },
+            githubUsername: "ashwin",
+            stats: {
+                theme: "tokyonight",
+                showStats: true,
+                showLangs: true,
+                showStreak: true,
+                showViews: true,
+                showTrophies: true,
+                showSnake: false
+            },
+            custom: {
+                content: ""
+            },
+            extras: {
+                showJoke: true,
+                showQuote: false,
+                quoteTheme: "tokyonight"
+            },
+            support: {
+                buyMeACoffee: "ashwin",
+                kofi: "",
+                patreon: ""
+            }
+        };
+
+        let state = { 
+            ...defaultState, 
+            order: [...defaultState.order],
+            global: {...defaultState.global},
+            header: {...defaultState.header},
+            about: {...defaultState.about}, 
+            socials: { ...defaultState.socials}, 
+            integrations: { ...defaultState.integrations },
+            stats: {...defaultState.stats}, 
+            custom: {...defaultState.custom},
+            extras: {...defaultState.extras},
+            support: {...defaultState.support},
+            skillsConfig: {...defaultState.skillsConfig},
+            skills: new Set(defaultState.skills) 
+        };
+
+        function toggleAccordion(element) {
+            const parent = element.parentElement;
+            parent.classList.toggle('open');
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+            
+            if (tab === 'preview') {
+                document.getElementById('preview-area').classList.add('active');
+                document.getElementById('markdown-area').classList.remove('active');
+            } else {
+                document.getElementById('preview-area').classList.remove('active');
+                document.getElementById('markdown-area').classList.add('active');
+            }
+        }
+
+        function renderSortableList() {
+            const list = document.getElementById('sortable-sections');
+            list.innerHTML = '';
+            
+            state.order.forEach(id => {
+                const li = document.createElement('li');
+                li.draggable = true;
+                li.dataset.id = id;
+                
+                const dragHandle = document.createElement('span');
+                dragHandle.className = 'drag-handle';
+                dragHandle.innerHTML = '⋮⋮';
+                
+                const title = document.createElement('span');
+                title.textContent = sectionNames[id];
+                
+                const removeBtn = document.createElement('span');
+                removeBtn.className = 'remove-section';
+                removeBtn.innerHTML = '×';
+                removeBtn.title = 'Remove Section';
+                removeBtn.onclick = () => removeSection(id);
+                
+                li.appendChild(dragHandle);
+                li.appendChild(title);
+                li.appendChild(removeBtn);
+                
+                li.addEventListener('dragstart', (e) => {
+                    li.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+                
+                li.addEventListener('dragend', () => {
+                    li.classList.remove('dragging');
+                    updateOrderFromUI();
+                });
+                
+                list.appendChild(li);
+            });
+
+            const availableSections = Object.keys(sectionNames).filter(id => !state.order.includes(id));
+            const select = document.getElementById('add-section-select');
+            if(select) {
+                select.innerHTML = '<option value="">+ Add Section...</option>';
+                availableSections.forEach(id => {
+                    const opt = document.createElement('option');
+                    opt.value = id;
+                    opt.textContent = sectionNames[id];
+                    select.appendChild(opt);
+                });
+                document.getElementById('add-section-container').style.display = availableSections.length > 0 ? 'flex' : 'none';
+            }
+        }
+
+        function removeSection(id) {
+            state.order = state.order.filter(item => item !== id);
+            renderSortableList();
+            render();
+        }
+
+        function addSection() {
+            const select = document.getElementById('add-section-select');
+            const id = select.value;
+            if(id) {
+                state.order.push(id);
+                renderSortableList();
+                render();
+            }
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('li:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function updateOrderFromUI() {
+            const list = document.getElementById('sortable-sections');
+            const items = [...list.querySelectorAll('li')];
+            state.order = items.map(li => li.dataset.id);
+            render();
+        }
+
+        function renderSkills() {
+            const container = document.getElementById('skills-container');
+            let html = '';
+            
+            for (const [category, items] of Object.entries(skillsData)) {
+                html += `<div class="skill-category">`;
+                html += `<h4>${category.replace('_', ' & ')}</h4>`;
+                html += `<div class="skills-grid">`;
+                
+                items.forEach(skill => {
+                    html += `
+                        <label>
+                            <input type="checkbox" class="skill-checkbox" value="${skill.id}" onchange="toggleSkill('${skill.id}', this.checked)">
+                            <span class="skill-label">${skill.name}</span>
+                        </label>
+                    `;
+                });
+                
+                html += `</div></div>`;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function initInputs() {
+            document.getElementById('global-align').value = state.global.alignment;
+            document.getElementById('global-badge').value = state.global.badgeStyle;
+            document.getElementById('global-badge-color').value = state.global.badgeColor;
+            document.getElementById('global-views-color').value = state.global.viewsColor;
+
+            document.getElementById('header-type').value = state.header.type;
+            document.getElementById('header-title').value = state.header.title;
+            document.getElementById('header-subtitle').value = state.header.subtitle;
+            document.getElementById('header-typing-lines').value = state.header.typingLines;
+            document.getElementById('header-typing-color').value = state.header.typingColor;
+            document.getElementById('header-capsule-type').value = state.header.capsuleType;
+            document.getElementById('header-capsule-theme').value = state.header.capsuleTheme;
+            document.getElementById('header-image-url').value = state.header.imageUrl;
+            
+            document.getElementById('abt-working').value = state.about.workingOn;
+            document.getElementById('abt-learning').value = state.about.learning;
+            document.getElementById('abt-collaborate').value = state.about.collaborateOn;
+            document.getElementById('abt-help').value = state.about.helpWith;
+            document.getElementById('abt-ask').value = state.about.askMeAbout;
+            document.getElementById('abt-reach').value = state.about.reachMe;
+            
+            document.getElementById('soc-github').value = state.socials.github;
+            document.getElementById('soc-linkedin').value = state.socials.linkedin;
+            document.getElementById('soc-twitter').value = state.socials.twitter;
+            document.getElementById('soc-medium').value = state.socials.medium;
+            document.getElementById('soc-youtube').value = state.socials.youtube;
+            document.getElementById('soc-discord').value = state.socials.discord;
+            document.getElementById('soc-portfolio').value = state.socials.portfolio;
+            
+            document.getElementById('skills-layout').value = state.skillsConfig.layout;
+            document.getElementById('skills-style').value = state.skillsConfig.style;
+            document.getElementById('skills-size').value = state.skillsConfig.size;
+
+            document.getElementById('int-leetcode').value = state.integrations.leetcodeUsername;
+            document.getElementById('int-leetcode-theme').value = state.integrations.leetcodeTheme;
+            document.getElementById('int-wakatime').value = state.integrations.wakatimeUsername;
+            document.getElementById('int-medium').value = state.integrations.mediumUsername;
+
+            document.getElementById('stat-username').value = state.githubUsername;
+            document.getElementById('stat-theme').value = state.stats.theme;
+
+            document.getElementById('custom-md').value = state.custom.content;
+
+            document.getElementById('support-bmc').value = state.support.buyMeACoffee;
+
+            setTimeout(() => {
+                state.skills.forEach(id => {
+                    const cb = document.querySelector(`.skill-checkbox[value="${id}"]`);
+                    if (cb) cb.checked = true;
+                });
+                updateState();
+            }, 50);
+        }
+
+        function toggleSkill(id, isChecked) {
+            if (isChecked) {
+                state.skills.add(id);
+            } else {
+                state.skills.delete(id);
+            }
+            render();
+        }
+
+        function updateState() {
+            state.global.alignment = document.getElementById('global-align').value;
+            state.global.badgeStyle = document.getElementById('global-badge').value;
+            state.global.badgeColor = document.getElementById('global-badge-color').value.replace('#', '');
+            state.global.viewsColor = document.getElementById('global-views-color').value;
+
+            state.header.type = document.getElementById('header-type').value;
+            state.header.title = document.getElementById('header-title').value;
+            state.header.subtitle = document.getElementById('header-subtitle').value;
+            state.header.typingLines = document.getElementById('header-typing-lines').value;
+            state.header.typingColor = document.getElementById('header-typing-color').value.replace('#', '');
+            state.header.capsuleType = document.getElementById('header-capsule-type').value;
+            state.header.capsuleTheme = document.getElementById('header-capsule-theme').value;
+            state.header.imageUrl = document.getElementById('header-image-url').value;
+
+            // Display dynamic form options
+            document.getElementById('header-typing-options').style.display = state.header.type === 'typing' ? 'block' : 'none';
+            document.getElementById('header-capsule-options').style.display = state.header.type === 'capsule' ? 'block' : 'none';
+            document.getElementById('header-image-options').style.display = state.header.type === 'image' ? 'block' : 'none';
+
+            state.about.workingOn = document.getElementById('abt-working').value;
+            state.about.learning = document.getElementById('abt-learning').value;
+            state.about.collaborateOn = document.getElementById('abt-collaborate').value;
+            state.about.helpWith = document.getElementById('abt-help').value;
+            state.about.askMeAbout = document.getElementById('abt-ask').value;
+            state.about.reachMe = document.getElementById('abt-reach').value;
+
+            state.socials.github = document.getElementById('soc-github').value;
+            state.socials.linkedin = document.getElementById('soc-linkedin').value;
+            state.socials.twitter = document.getElementById('soc-twitter').value;
+            state.socials.medium = document.getElementById('soc-medium').value;
+            state.socials.youtube = document.getElementById('soc-youtube').value;
+            state.socials.discord = document.getElementById('soc-discord').value;
+            state.socials.portfolio = document.getElementById('soc-portfolio').value;
+
+            state.skillsConfig.layout = document.getElementById('skills-layout').value;
+            state.skillsConfig.style = document.getElementById('skills-style').value;
+            state.skillsConfig.size = document.getElementById('skills-size').value;
+            document.getElementById('skills-size-group').style.display = state.skillsConfig.style === 'shields' ? 'flex' : 'none';
+
+            state.integrations.leetcodeUsername = document.getElementById('int-leetcode').value;
+            state.integrations.leetcodeTheme = document.getElementById('int-leetcode-theme').value;
+            state.integrations.wakatimeUsername = document.getElementById('int-wakatime').value;
+            state.integrations.mediumUsername = document.getElementById('int-medium').value;
+
+            state.githubUsername = document.getElementById('stat-username').value;
+            state.stats.theme = document.getElementById('stat-theme').value;
+            state.stats.showStats = document.getElementById('stat-show-stats').checked;
+            state.stats.showLangs = document.getElementById('stat-show-langs').checked;
+            state.stats.showStreak = document.getElementById('stat-show-streak').checked;
+            state.stats.showViews = document.getElementById('stat-show-views').checked;
+            state.stats.showTrophies = document.getElementById('stat-show-trophies').checked;
+            state.stats.showSnake = document.getElementById('stat-show-snake').checked;
+
+            state.custom.content = document.getElementById('custom-md').value;
+
+            state.extras.showJoke = document.getElementById('extra-show-joke').checked;
+            state.extras.showQuote = document.getElementById('extra-show-quote').checked;
+            state.extras.quoteTheme = document.getElementById('extra-quote-theme').value;
+
+            state.support.buyMeACoffee = document.getElementById('support-bmc').value;
+            state.support.kofi = document.getElementById('support-kofi').value;
+            state.support.patreon = document.getElementById('support-patreon').value;
+
+            render();
+        }
+
+        function generateMD() {
+            let md = "";
+            const align = state.global.alignment; 
+            const badgeStyle = state.global.badgeStyle;
+            const customBadgeColor = state.global.badgeColor;
+
+            const generators = {
+                header: () => {
+                    let out = "";
+                    if(state.header.type === 'text') {
+                        if(state.header.title) out += `<h1 align="${align}">${state.header.title}</h1>\n`;
+                        if(state.header.subtitle) out += `<h3 align="${align}">${state.header.subtitle}</h3>\n\n`;
+                    } else if (state.header.type === 'typing') {
+                        const lines = state.header.typingLines.split(',').map(s => s.trim()).filter(s => s).join(';');
+                        const encodedLines = encodeURIComponent(lines || state.header.subtitle);
+                        const isCenter = align === 'center' ? 'true' : 'false';
+                        const url = `https://readme-typing-svg.herokuapp.com/?font=Righteous&size=35&center=${isCenter}&vCenter=true&width=500&height=70&duration=4000&lines=${encodedLines}&color=${state.header.typingColor || '36BCF7'}`;
+                        if(state.header.title) out += `<h1 align="${align}">${state.header.title}</h1>\n`;
+                        out += `<p align="${align}"><img src="${url}" alt="Typing SVG" /></p>\n\n`;
+                    } else if (state.header.type === 'capsule') {
+                        const text = encodeURIComponent(state.header.title || "Hello World");
+                        const url = `https://capsule-render.vercel.app/api?type=${state.header.capsuleType}&color=${state.header.capsuleTheme}&height=250&section=header&text=${text}&fontSize=70&animation=fadeIn&fontAlignY=38&desc=${encodeURIComponent(state.header.subtitle)}&descAlignY=51&descAlign=62`;
+                        out += `<p align="${align}"><img src="${url}" alt="Capsule Render" /></p>\n\n`;
+                    } else if (state.header.type === 'image') {
+                        if(state.header.title) out += `<h1 align="${align}">${state.header.title}</h1>\n`;
+                        if(state.header.imageUrl) out += `<p align="${align}"><img src="${state.header.imageUrl}" alt="Header Banner" width="100%" /></p>\n\n`;
+                    }
+                    return out;
+                },
+                views: () => {
+                    if(state.stats.showViews && state.githubUsername) {
+                        return `<p align="${align}">\n  <img src="https://komarev.com/ghpvc/?username=${state.githubUsername}&label=Profile%20views&color=${state.global.viewsColor}&style=${badgeStyle}" alt="profile views" />\n</p>\n\n`;
+                    }
+                    return "";
+                },
+                socials: () => {
+                    let hasSocials = Object.values(state.socials).some(v => v && v.trim() !== "");
+                    if(!hasSocials) return "";
+                    let out = `<p align="${align}">\n`;
+                    
+                    const githubColor = customBadgeColor || '121011';
+                    const linkedinColor = customBadgeColor || '0077B5';
+                    const twitterColor = customBadgeColor || '1DA1F2';
+                    const mediumColor = customBadgeColor || '12100E';
+                    const youtubeColor = customBadgeColor || 'FF0000';
+                    const discordColor = customBadgeColor || '5865F2';
+                    const portfolioColor = customBadgeColor || '000000';
+
+                    if(state.socials.github) out += `  <a href="https://github.com/${state.socials.github}" target="_blank"><img src="https://img.shields.io/badge/github-%23${githubColor}.svg?style=${badgeStyle}&logo=github&logoColor=white" alt="github"/></a>\n`;
+                    if(state.socials.linkedin) out += `  <a href="https://linkedin.com/in/${state.socials.linkedin}" target="_blank"><img src="https://img.shields.io/badge/linkedin-%23${linkedinColor}.svg?style=${badgeStyle}&logo=linkedin&logoColor=white" alt="linkedin"/></a>\n`;
+                    if(state.socials.twitter) out += `  <a href="https://twitter.com/${state.socials.twitter}" target="_blank"><img src="https://img.shields.io/badge/Twitter-%23${twitterColor}.svg?style=${badgeStyle}&logo=Twitter&logoColor=white" alt="twitter"/></a>\n`;
+                    if(state.socials.medium) out += `  <a href="https://medium.com/@${state.socials.medium}" target="_blank"><img src="https://img.shields.io/badge/Medium-%23${mediumColor}.svg?style=${badgeStyle}&logo=medium&logoColor=white" alt="medium"/></a>\n`;
+                    if(state.socials.youtube) out += `  <a href="https://youtube.com/c/${state.socials.youtube}" target="_blank"><img src="https://img.shields.io/badge/YouTube-%23${youtubeColor}.svg?style=${badgeStyle}&logo=YouTube&logoColor=white" alt="youtube"/></a>\n`;
+                    if(state.socials.discord) out += `  <a href="https://discord.gg/${state.socials.discord}" target="_blank"><img src="https://img.shields.io/badge/Discord-%23${discordColor}.svg?style=${badgeStyle}&logo=discord&logoColor=white" alt="discord"/></a>\n`;
+                    if(state.socials.portfolio) out += `  <a href="${state.socials.portfolio}" target="_blank"><img src="https://img.shields.io/badge/Portfolio-%23${portfolioColor}.svg?style=${badgeStyle}&logo=firefox&logoColor=#FF7139" alt="portfolio"/></a>\n`;
+                    out += `</p>\n\n`;
+                    return out;
+                },
+                about: () => {
+                    let hasAbout = Object.values(state.about).some(v => v.trim() !== "");
+                    if(!hasAbout) return "";
+                    let out = `<div align="${align}">\n\n`;
+                    if(state.about.workingOn) out += `🔭 I’m currently working on **${state.about.workingOn}** <br>\n`;
+                    if(state.about.learning) out += `🌱 I’m currently learning **${state.about.learning}** <br>\n`;
+                    if(state.about.collaborateOn) out += `👯 I’m looking to collaborate on **${state.about.collaborateOn}** <br>\n`;
+                    if(state.about.helpWith) out += `🤔 I’m looking for help with **${state.about.helpWith}** <br>\n`;
+                    if(state.about.askMeAbout) out += `💬 Ask me about **${state.about.askMeAbout}** <br>\n`;
+                    if(state.about.reachMe) out += `📫 How to reach me **${state.about.reachMe}** <br>\n`;
+                    out += `\n</div>\n\n`;
+                    return out;
+                },
+                skills: () => {
+                    if(state.skills.size === 0) return "";
+                    
+                    const isGrouped = state.skillsConfig.layout === "categorized";
+                    const isSkillIcons = state.skillsConfig.style.startsWith('skillicons');
+                    const theme = isSkillIcons ? state.skillsConfig.style.split('-')[1] : null;
+                    
+                    let out = `<h3 align="${align}">🛠 Languages and Tools</h3>\n`;
+                    
+                    if (isGrouped) {
+                        Object.entries(skillsData).forEach(([category, items]) => {
+                            let catSkills = items.filter(s => state.skills.has(s.id));
+                            if(catSkills.length > 0) {
+                                out += `<h4 align="${align}">${category.replace('_', ' & ')}</h4>\n`;
+                                if(isSkillIcons) {
+                                    const iconList = catSkills.map(s => s.skillicon).filter(Boolean).join(',');
+                                    out += `<p align="${align}">\n  <a href="https://skillicons.dev">\n    <img src="https://skillicons.dev/icons?i=${iconList}&theme=${theme}" />\n  </a>\n</p>\n\n`;
+                                } else {
+                                    out += `<p align="${align}">\n`;
+                                    catSkills.forEach(skill => {
+                                        const heightParam = state.skillsConfig.size ? ` height="${state.skillsConfig.size}"` : "";
+                                        const bColor = customBadgeColor ? customBadgeColor : skill.color;
+                                        out += `  <img src="https://img.shields.io/badge/${skill.name.replace('-','_')}-${bColor}?style=${badgeStyle}&logo=${skill.logo}&logoColor=white" alt="${skill.name}"${heightParam} />\n`;
+                                    });
+                                    out += `</p>\n\n`;
+                                }
+                            }
+                        });
+                    } else {
+                        let selectedSkills = [];
+                        Object.values(skillsData).forEach(cat => {
+                            cat.forEach(s => {
+                                if(state.skills.has(s.id)) selectedSkills.push(s);
+                            })
+                        });
+                        if(isSkillIcons) {
+                            const iconList = selectedSkills.map(s => s.skillicon).filter(Boolean).join(',');
+                            out += `<p align="${align}">\n  <a href="https://skillicons.dev">\n    <img src="https://skillicons.dev/icons?i=${iconList}&theme=${theme}" />\n  </a>\n</p>\n\n`;
+                        } else {
+                            out += `<p align="${align}">\n`;
+                            selectedSkills.forEach(skill => {
+                                const heightParam = state.skillsConfig.size ? ` height="${state.skillsConfig.size}"` : "";
+                                const bColor = customBadgeColor ? customBadgeColor : skill.color;
+                                out += `  <img src="https://img.shields.io/badge/${skill.name.replace('-','_')}-${bColor}?style=${badgeStyle}&logo=${skill.logo}&logoColor=white" alt="${skill.name}"${heightParam} />\n`;
+                            });
+                            out += `</p>\n\n`;
+                        }
+                    }
+                    return out;
+                },
+                integrations: () => {
+                    let out = "";
+                    let hasInt = state.integrations.leetcodeUsername || state.integrations.wakatimeUsername || state.integrations.mediumUsername;
+                    if(!hasInt) return "";
+                    
+                    out += `<h3 align="${align}">🧩 Integrations</h3>\n`;
+                    out += `<p align="${align}">\n`;
+                    if (state.integrations.leetcodeUsername) {
+                        out += `  <a href="https://leetcode.com/${state.integrations.leetcodeUsername}"><img src="https://leetcard.jacoblin.cool/${state.integrations.leetcodeUsername}?theme=${state.integrations.leetcodeTheme}&font=Syne&ext=activity" alt="LeetCode" /></a>\n`;
+                    }
+                    if (state.integrations.wakatimeUsername) {
+                        out += `  <a href="https://wakatime.com/@${state.integrations.wakatimeUsername}"><img src="https://github-readme-stats.vercel.app/api/wakatime?username=${state.integrations.wakatimeUsername}&theme=${state.stats.theme}&hide_border=true" alt="Wakatime" /></a>\n`;
+                    }
+                    if (state.integrations.mediumUsername) {
+                        out += `  <br><br>\n`;
+                        out += `  <a href="https://medium.com/@${state.integrations.mediumUsername}"><img src="https://github-readme-medium-recent-article.vercel.app/medium/@${state.integrations.mediumUsername}/0" alt="Medium Article" /></a>\n`;
+                    }
+                    out += `</p>\n\n`;
+                    return out;
+                },
+                custom: () => {
+                    if(!state.custom.content.trim()) return "";
+                    let out = `<div align="${align}">\n\n`;
+                    out += state.custom.content;
+                    out += `\n\n</div>\n\n`;
+                    return out;
+                },
+                trophies: () => {
+                    if(state.githubUsername && state.stats.showTrophies) {
+                        return `<h3 align="${align}">🏆 GitHub Trophies</h3>\n<p align="${align}">\n  <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=${state.githubUsername}&theme=${state.stats.theme}&column=7&margin-w=15&margin-h=15&no-bg=true&no-frame=true" alt="${state.githubUsername} trophies" /></a>\n</p>\n\n`;
+                    }
+                    return "";
+                },
+                stats: () => {
+                    if(!state.githubUsername || (!state.stats.showStats && !state.stats.showLangs && !state.stats.showStreak && !state.stats.showSnake)) return "";
+                    let out = `<h3 align="${align}">🔥 GitHub Stats</h3>\n`;
+                    out += `<p align="${align}">\n`;
+                    if(state.stats.showStats) {
+                        out += `  <a href="https://github.com/${state.githubUsername}"><img src="https://github-readme-stats.vercel.app/api?username=${state.githubUsername}&show_icons=true&theme=${state.stats.theme}&locale=en&hide_border=true" alt="stats" /></a>\n`;
+                    }
+                    if(state.stats.showStreak) {
+                        out += `  <a href="https://github.com/${state.githubUsername}"><img src="https://github-readme-streak-stats.herokuapp.com/?user=${state.githubUsername}&theme=${state.stats.theme}&hide_border=true" alt="streak" /></a>\n`;
+                    }
+                    if(state.stats.showLangs) {
+                        out += `<br><br>\n`;
+                        out += `  <a href="https://github.com/${state.githubUsername}"><img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${state.githubUsername}&layout=compact&theme=${state.stats.theme}&hide_border=true" alt="languages" /></a>\n`;
+                    }
+                    if(state.stats.showSnake) {
+                        out += `<br><br>\n`;
+                        out += `  <picture>\n`;
+                        out += `    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/${state.githubUsername}/${state.githubUsername}/output/github-contribution-grid-snake-dark.svg">\n`;
+                        out += `    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/${state.githubUsername}/${state.githubUsername}/output/github-contribution-grid-snake.svg">\n`;
+                        out += `    <img alt="github contribution grid snake animation" src="https://raw.githubusercontent.com/${state.githubUsername}/${state.githubUsername}/output/github-contribution-grid-snake.svg">\n`;
+                        out += `  </picture>\n`;
+                    }
+                    out += `</p>\n\n`;
+                    return out;
+                },
+                extras: () => {
+                    if(!state.extras.showJoke && !state.extras.showQuote) return "";
+                    let out = `<h3 align="${align}">💫 Daily Dose of Dev</h3>\n`;
+                    out += `<p align="${align}">\n`;
+                    if(state.extras.showJoke) {
+                        out += `  <img src="https://readme-jokes.vercel.app/api?theme=${state.stats.theme}&hideBorder=true" alt="Jokes Card" />\n`;
+                    }
+                    if(state.extras.showQuote) {
+                        out += `  <img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=${state.extras.quoteTheme}" alt="Quotes Card" />\n`;
+                    }
+                    out += `</p>\n\n`;
+                    return out;
+                },
+                support: () => {
+                    let hasSupport = Object.values(state.support).some(v => v.trim() !== "");
+                    if(!hasSupport) return "";
+                    let out = `<h3 align="${align}">💝 Support Me</h3>\n`;
+                    out += `<p align="${align}">\n`;
+                    if(state.support.buyMeACoffee) {
+                        out += `  <a href="https://www.buymeacoffee.com/${state.support.buyMeACoffee}" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 145px !important;" ></a>\n`;
+                    }
+                    if(state.support.kofi) {
+                        out += `  <a href="https://ko-fi.com/${state.support.kofi}" target="_blank"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="ko-fi" style="height: 40px !important;width: 145px !important;" ></a>\n`;
+                    }
+                    if(state.support.patreon) {
+                        out += `  <a href="https://patreon.com/${state.support.patreon}" target="_blank"><img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3D${state.support.patreon}%26type%3Dpatrons&style=${badgeStyle}" alt="Patreon" /></a>\n`;
+                    }
+                    out += `</p>\n\n`;
+                    return out;
+                }
+            };
+
+            state.order.forEach(section => {
+                md += generators[section]();
+            });
+
+            return md;
+        }
+
+        function render() {
+            const md = generateMD();
+            document.getElementById('markdown-area').textContent = md;
+            document.getElementById('preview-area').innerHTML = marked.parse(md);
+        }
+
+        function copyMarkdown() {
+            const md = generateMD();
+            navigator.clipboard.writeText(md).then(() => {
+                const btn = document.querySelector('.btn-primary');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '✅ Copied to Clipboard!';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                }, 2000);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const list = document.getElementById('sortable-sections');
+            list.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const afterElement = getDragAfterElement(list, e.clientY);
+                const draggable = document.querySelector('.dragging');
+                if(draggable) {
+                    if (afterElement == null) {
+                        list.appendChild(draggable);
+                    } else {
+                        list.insertBefore(draggable, afterElement);
+                    }
+                }
+            });
+
+            renderSortableList();
+            renderSkills();
+            initInputs();
+        });
+    </script>
+</body>
+</html>
