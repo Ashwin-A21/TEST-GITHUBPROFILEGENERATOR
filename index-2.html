@@ -651,11 +651,11 @@
                     <p class="text-sm text-muted">Customize the overall style and color mapping of your README badges.</p>
                     <div class="grid-2">
                         <div class="form-group">
-                            <label>General Alignment</label>
-                            <select id="global-align" onchange="updateState()">
-                                <option value="center">Center</option>
-                                <option value="left">Left</option>
-                                <option value="right">Right</option>
+                            <label>README Template Layout</label>
+                            <select id="global-template" onchange="updateState()">
+                                <option value="cards">Premium Grid (Large Cards, Blockquotes, Tables)</option>
+                                <option value="modern">Modern (Left-Aligned, Standard Sizing)</option>
+                                <option value="centered">Classic (Center-Aligned)</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -1151,7 +1151,7 @@
         const defaultState = {
             order: ['header', 'views', 'socials', 'about', 'skills', 'integrations', 'trophies', 'stats', 'custom', 'extras', 'support'],
             global: {
-                alignment: "center",
+                template: "cards",
                 badgeStyle: "for-the-badge",
                 badgeColor: "",
                 viewsColor: "0e75b6"
@@ -1368,7 +1368,7 @@
         }
 
         function initInputs() {
-            document.getElementById('global-align').value = state.global.alignment;
+            document.getElementById('global-template').value = state.global.template;
             document.getElementById('global-badge').value = state.global.badgeStyle;
             document.getElementById('global-badge-color').value = state.global.badgeColor;
             document.getElementById('global-views-color').value = state.global.viewsColor;
@@ -1432,7 +1432,7 @@
         }
 
         function updateState() {
-            state.global.alignment = document.getElementById('global-align').value;
+            state.global.template = document.getElementById('global-template').value;
             state.global.badgeStyle = document.getElementById('global-badge').value;
             state.global.badgeColor = document.getElementById('global-badge-color').value.replace('#', '');
             state.global.viewsColor = document.getElementById('global-views-color').value;
@@ -1500,36 +1500,40 @@
 
         function generateMD() {
             let md = "";
-            const align = state.global.alignment; 
+            const tpl = state.global.template || 'cards';
+            const align = tpl === 'centered' ? 'center' : 'left'; 
             const badgeStyle = state.global.badgeStyle;
             const customBadgeColor = state.global.badgeColor;
+
+            // Optional thematic breaks between sections
+            const divider = tpl === 'cards' ? '\n\n---\n\n' : '\n\n';
 
             const generators = {
                 header: () => {
                     let out = "";
                     if(state.header.type === 'text') {
                         if(state.header.title) out += `<h1 align="${align}">${state.header.title}</h1>\n`;
-                        if(state.header.subtitle) out += `<h3 align="${align}">${state.header.subtitle}</h3>\n\n`;
+                        if(state.header.subtitle) out += `<h3 align="${align}">${state.header.subtitle}</h3>\n`;
                     } else if (state.header.type === 'typing') {
                         const lines = state.header.typingLines.split(',').map(s => s.trim()).filter(s => s).join(';');
                         const encodedLines = encodeURIComponent(lines || state.header.subtitle);
                         const isCenter = align === 'center' ? 'true' : 'false';
                         const url = `https://readme-typing-svg.herokuapp.com/?font=Righteous&size=35&center=${isCenter}&vCenter=true&width=500&height=70&duration=4000&lines=${encodedLines}&color=${state.header.typingColor || '36BCF7'}`;
                         if(state.header.title) out += `<h1 align="${align}">${state.header.title}</h1>\n`;
-                        out += `<p align="${align}"><img src="${url}" alt="Typing SVG" /></p>\n\n`;
+                        out += `<p align="${align}"><img src="${url}" alt="Typing SVG" /></p>\n`;
                     } else if (state.header.type === 'capsule') {
                         const text = encodeURIComponent(state.header.title || "Hello World");
                         const url = `https://capsule-render.vercel.app/api?type=${state.header.capsuleType}&color=${state.header.capsuleTheme}&height=250&section=header&text=${text}&fontSize=70&animation=fadeIn&fontAlignY=38&desc=${encodeURIComponent(state.header.subtitle)}&descAlignY=51&descAlign=62`;
-                        out += `<p align="${align}"><img src="${url}" alt="Capsule Render" /></p>\n\n`;
+                        out += `<p align="${align}"><img src="${url}" alt="Capsule Render" /></p>\n`;
                     } else if (state.header.type === 'image') {
                         if(state.header.title) out += `<h1 align="${align}">${state.header.title}</h1>\n`;
-                        if(state.header.imageUrl) out += `<p align="${align}"><img src="${state.header.imageUrl}" alt="Header Banner" width="100%" /></p>\n\n`;
+                        if(state.header.imageUrl) out += `<p align="${align}"><img src="${state.header.imageUrl}" alt="Header Banner" width="100%" /></p>\n`;
                     }
                     return out;
                 },
                 views: () => {
                     if(state.stats.showViews && state.githubUsername) {
-                        return `<p align="${align}">\n  <img src="https://komarev.com/ghpvc/?username=${state.githubUsername}&label=Profile%20views&color=${state.global.viewsColor}&style=${badgeStyle}" alt="profile views" />\n</p>\n\n`;
+                        return `<p align="${align}">\n  <img src="https://komarev.com/ghpvc/?username=${state.githubUsername}&label=Profile%20views&color=${state.global.viewsColor}&style=${badgeStyle}" alt="profile views" />\n</p>\n`;
                     }
                     return "";
                 },
@@ -1553,20 +1557,31 @@
                     if(state.socials.youtube) out += `  <a href="https://youtube.com/c/${state.socials.youtube}" target="_blank"><img src="https://img.shields.io/badge/YouTube-%23${youtubeColor}.svg?style=${badgeStyle}&logo=YouTube&logoColor=white" alt="youtube"/></a>\n`;
                     if(state.socials.discord) out += `  <a href="https://discord.gg/${state.socials.discord}" target="_blank"><img src="https://img.shields.io/badge/Discord-%23${discordColor}.svg?style=${badgeStyle}&logo=discord&logoColor=white" alt="discord"/></a>\n`;
                     if(state.socials.portfolio) out += `  <a href="${state.socials.portfolio}" target="_blank"><img src="https://img.shields.io/badge/Portfolio-%23${portfolioColor}.svg?style=${badgeStyle}&logo=firefox&logoColor=#FF7139" alt="portfolio"/></a>\n`;
-                    out += `</p>\n\n`;
+                    out += `</p>\n`;
                     return out;
                 },
                 about: () => {
                     let hasAbout = Object.values(state.about).some(v => v.trim() !== "");
                     if(!hasAbout) return "";
-                    let out = `<div align="${align}">\n\n`;
-                    if(state.about.workingOn) out += `🔭 I’m currently working on **${state.about.workingOn}** <br>\n`;
-                    if(state.about.learning) out += `🌱 I’m currently learning **${state.about.learning}** <br>\n`;
-                    if(state.about.collaborateOn) out += `👯 I’m looking to collaborate on **${state.about.collaborateOn}** <br>\n`;
-                    if(state.about.helpWith) out += `🤔 I’m looking for help with **${state.about.helpWith}** <br>\n`;
-                    if(state.about.askMeAbout) out += `💬 Ask me about **${state.about.askMeAbout}** <br>\n`;
-                    if(state.about.reachMe) out += `📫 How to reach me **${state.about.reachMe}** <br>\n`;
-                    out += `\n</div>\n\n`;
+                    let out = "";
+                    if (tpl === 'cards') {
+                        out += `<h3 align="left">👨‍💻 About Me</h3>\n\n`;
+                        if(state.about.workingOn) out += `> 🔭 **Currently working on:** ${state.about.workingOn}\n>\n`;
+                        if(state.about.learning) out += `> 🌱 **Currently learning:** ${state.about.learning}\n>\n`;
+                        if(state.about.collaborateOn) out += `> 👯 **Looking to collaborate on:** ${state.about.collaborateOn}\n>\n`;
+                        if(state.about.helpWith) out += `> 🤔 **Looking for help with:** ${state.about.helpWith}\n>\n`;
+                        if(state.about.askMeAbout) out += `> 💬 **Ask me about:** ${state.about.askMeAbout}\n>\n`;
+                        if(state.about.reachMe) out += `> 📫 **How to reach me:** ${state.about.reachMe}\n`;
+                    } else {
+                        out += `<div align="${align}">\n\n`;
+                        if(state.about.workingOn) out += `🔭 I’m currently working on **${state.about.workingOn}** <br>\n`;
+                        if(state.about.learning) out += `🌱 I’m currently learning **${state.about.learning}** <br>\n`;
+                        if(state.about.collaborateOn) out += `👯 I’m looking to collaborate on **${state.about.collaborateOn}** <br>\n`;
+                        if(state.about.helpWith) out += `🤔 I’m looking for help with **${state.about.helpWith}** <br>\n`;
+                        if(state.about.askMeAbout) out += `💬 Ask me about **${state.about.askMeAbout}** <br>\n`;
+                        if(state.about.reachMe) out += `📫 How to reach me **${state.about.reachMe}** <br>\n`;
+                        out += `\n</div>\n`;
+                    }
                     return out;
                 },
                 skills: () => {
@@ -1585,7 +1600,7 @@
                                 out += `<h4 align="${align}">${category.replace('_', ' & ')}</h4>\n`;
                                 if(isSkillIcons) {
                                     const iconList = catSkills.map(s => s.skillicon).filter(Boolean).join(',');
-                                    out += `<p align="${align}">\n  <a href="https://skillicons.dev">\n    <img src="https://skillicons.dev/icons?i=${iconList}&theme=${theme}" />\n  </a>\n</p>\n\n`;
+                                    out += `<p align="${align}">\n  <a href="https://skillicons.dev">\n    <img src="https://skillicons.dev/icons?i=${iconList}&theme=${theme}" />\n  </a>\n</p>\n`;
                                 } else {
                                     out += `<p align="${align}">\n`;
                                     catSkills.forEach(skill => {
@@ -1593,7 +1608,7 @@
                                         const bColor = customBadgeColor ? customBadgeColor : skill.color;
                                         out += `  <img src="https://img.shields.io/badge/${skill.name.replace('-','_')}-${bColor}?style=${badgeStyle}&logo=${skill.logo}&logoColor=white" alt="${skill.name}"${heightParam} />\n`;
                                     });
-                                    out += `</p>\n\n`;
+                                    out += `</p>\n`;
                                 }
                             }
                         });
@@ -1606,7 +1621,7 @@
                         });
                         if(isSkillIcons) {
                             const iconList = selectedSkills.map(s => s.skillicon).filter(Boolean).join(',');
-                            out += `<p align="${align}">\n  <a href="https://skillicons.dev">\n    <img src="https://skillicons.dev/icons?i=${iconList}&theme=${theme}" />\n  </a>\n</p>\n\n`;
+                            out += `<p align="${align}">\n  <a href="https://skillicons.dev">\n    <img src="https://skillicons.dev/icons?i=${iconList}&theme=${theme}" />\n  </a>\n</p>\n`;
                         } else {
                             out += `<p align="${align}">\n`;
                             selectedSkills.forEach(skill => {
@@ -1614,67 +1629,126 @@
                                 const bColor = customBadgeColor ? customBadgeColor : skill.color;
                                 out += `  <img src="https://img.shields.io/badge/${skill.name.replace('-','_')}-${bColor}?style=${badgeStyle}&logo=${skill.logo}&logoColor=white" alt="${skill.name}"${heightParam} />\n`;
                             });
-                            out += `</p>\n\n`;
+                            out += `</p>\n`;
                         }
                     }
                     return out;
                 },
                 integrations: () => {
-                    let out = "";
                     let hasInt = state.integrations.leetcodeUsername || state.integrations.wakatimeUsername || state.integrations.mediumUsername;
                     if(!hasInt) return "";
                     
-                    out += `<h3 align="${align}">🧩 Integrations</h3>\n`;
-                    out += `<p align="${align}">\n`;
-                    if (state.integrations.leetcodeUsername) {
-                        out += `  <a href="https://leetcode.com/${state.integrations.leetcodeUsername}"><img src="https://leetcard.jacoblin.cool/${state.integrations.leetcodeUsername}?theme=${state.integrations.leetcodeTheme}&font=Syne&ext=activity" alt="LeetCode" /></a>\n`;
+                    let out = `<h3 align="${align}">🧩 Integrations</h3>\n`;
+                    if (tpl === 'cards') {
+                        out += `<table width="100%">\n  <tr>\n`;
+                        let cols = 0;
+                        if (state.integrations.leetcodeUsername) {
+                            out += `    <td width="50%"><a href="https://leetcode.com/${state.integrations.leetcodeUsername}"><img src="https://leetcard.jacoblin.cool/${state.integrations.leetcodeUsername}?theme=${state.integrations.leetcodeTheme}&font=Syne&ext=activity" alt="LeetCode" width="100%" /></a></td>\n`;
+                            cols++;
+                        }
+                        if (state.integrations.wakatimeUsername) {
+                            out += `    <td width="50%"><a href="https://wakatime.com/@${state.integrations.wakatimeUsername}"><img src="https://github-readme-stats.vercel.app/api/wakatime?username=${state.integrations.wakatimeUsername}&theme=${state.stats.theme}&hide_border=true" alt="Wakatime" width="100%" /></a></td>\n`;
+                            cols++;
+                        }
+                        if (cols === 1) out += `    <td width="50%"></td>\n`;
+                        out += `  </tr>\n`;
+                        if (state.integrations.mediumUsername) {
+                            out += `  <tr>\n    <td colspan="2"><a href="https://medium.com/@${state.integrations.mediumUsername}"><img src="https://github-readme-medium-recent-article.vercel.app/medium/@${state.integrations.mediumUsername}/0" alt="Medium Article" width="100%" /></a></td>\n  </tr>\n`;
+                        }
+                        out += `</table>\n`;
+                    } else {
+                        out += `<p align="${align}">\n`;
+                        if (state.integrations.leetcodeUsername) {
+                            out += `  <a href="https://leetcode.com/${state.integrations.leetcodeUsername}"><img src="https://leetcard.jacoblin.cool/${state.integrations.leetcodeUsername}?theme=${state.integrations.leetcodeTheme}&font=Syne&ext=activity" alt="LeetCode" /></a>\n`;
+                        }
+                        if (state.integrations.wakatimeUsername) {
+                            out += `  <a href="https://wakatime.com/@${state.integrations.wakatimeUsername}"><img src="https://github-readme-stats.vercel.app/api/wakatime?username=${state.integrations.wakatimeUsername}&theme=${state.stats.theme}&hide_border=true" alt="Wakatime" /></a>\n`;
+                        }
+                        if (state.integrations.mediumUsername) {
+                            out += `  <br><br>\n`;
+                            out += `  <a href="https://medium.com/@${state.integrations.mediumUsername}"><img src="https://github-readme-medium-recent-article.vercel.app/medium/@${state.integrations.mediumUsername}/0" alt="Medium Article" /></a>\n`;
+                        }
+                        out += `</p>\n`;
                     }
-                    if (state.integrations.wakatimeUsername) {
-                        out += `  <a href="https://wakatime.com/@${state.integrations.wakatimeUsername}"><img src="https://github-readme-stats.vercel.app/api/wakatime?username=${state.integrations.wakatimeUsername}&theme=${state.stats.theme}&hide_border=true" alt="Wakatime" /></a>\n`;
-                    }
-                    if (state.integrations.mediumUsername) {
-                        out += `  <br><br>\n`;
-                        out += `  <a href="https://medium.com/@${state.integrations.mediumUsername}"><img src="https://github-readme-medium-recent-article.vercel.app/medium/@${state.integrations.mediumUsername}/0" alt="Medium Article" /></a>\n`;
-                    }
-                    out += `</p>\n\n`;
                     return out;
                 },
                 custom: () => {
                     if(!state.custom.content.trim()) return "";
                     let out = `<div align="${align}">\n\n`;
                     out += state.custom.content;
-                    out += `\n\n</div>\n\n`;
+                    out += `\n\n</div>\n`;
                     return out;
                 },
                 trophies: () => {
                     if(state.githubUsername && state.stats.showTrophies) {
-                        return `<h3 align="${align}">🏆 GitHub Trophies</h3>\n<p align="${align}">\n  <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=${state.githubUsername}&theme=${state.stats.theme}&column=7&margin-w=15&margin-h=15&no-bg=true&no-frame=true" alt="${state.githubUsername} trophies" /></a>\n</p>\n\n`;
+                        return `<h3 align="${align}">🏆 GitHub Trophies</h3>\n<p align="${align}">\n  <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=${state.githubUsername}&theme=${state.stats.theme}&column=7&margin-w=15&margin-h=15&no-bg=true&no-frame=true" alt="${state.githubUsername} trophies" /></a>\n</p>\n`;
                     }
                     return "";
                 },
                 stats: () => {
                     if(!state.githubUsername || (!state.stats.showStats && !state.stats.showLangs && !state.stats.showStreak && !state.stats.showSnake)) return "";
                     let out = `<h3 align="${align}">🔥 GitHub Stats</h3>\n`;
-                    out += `<p align="${align}">\n`;
-                    if(state.stats.showStats) {
-                        out += `  <a href="https://github.com/${state.githubUsername}"><img src="https://github-readme-stats.vercel.app/api?username=${state.githubUsername}&show_icons=true&theme=${state.stats.theme}&locale=en&hide_border=true" alt="stats" /></a>\n`;
+                    
+                    if (tpl === 'cards') {
+                        out += `<table width="100%">\n`;
+                        let hasTopRow = state.stats.showStats || state.stats.showStreak;
+                        if (hasTopRow) {
+                            out += `  <tr>\n`;
+                            let cols = 0;
+                            if(state.stats.showStats) {
+                                out += `    <td width="50%"><a href="https://github.com/${state.githubUsername}"><img src="https://github-readme-stats.vercel.app/api?username=${state.githubUsername}&show_icons=true&theme=${state.stats.theme}&locale=en&hide_border=true" alt="stats" width="100%" /></a></td>\n`;
+                                cols++;
+                            }
+                            if(state.stats.showStreak) {
+                                out += `    <td width="50%"><a href="https://github.com/${state.githubUsername}"><img src="https://github-readme-streak-stats.herokuapp.com/?user=${state.githubUsername}&theme=${state.stats.theme}&hide_border=true" alt="streak" width="100%" /></a></td>\n`;
+                                cols++;
+                            }
+                            if (cols === 1) out += `    <td width="50%"></td>\n`;
+                            out += `  </tr>\n`;
+                        }
+                        
+                        let hasBotRow = state.stats.showLangs || state.stats.showSnake;
+                        if (hasBotRow) {
+                            out += `  <tr>\n`;
+                            let lCols = 0;
+                            if(state.stats.showLangs) {
+                                out += `    <td width="50%"><a href="https://github.com/${state.githubUsername}"><img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${state.githubUsername}&layout=compact&theme=${state.stats.theme}&hide_border=true" alt="languages" width="100%" /></a></td>\n`;
+                                lCols++;
+                            }
+                            if(state.stats.showSnake) {
+                                out += `    <td width="50%">\n      <picture>\n`;
+                                out += `        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/${state.githubUsername}/${state.githubUsername}/output/github-contribution-grid-snake-dark.svg">\n`;
+                                out += `        <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/${state.githubUsername}/${state.githubUsername}/output/github-contribution-grid-snake.svg">\n`;
+                                out += `        <img alt="github contribution grid snake animation" src="https://raw.githubusercontent.com/${state.githubUsername}/${state.githubUsername}/output/github-contribution-grid-snake.svg" width="100%">\n`;
+                                out += `      </picture>\n    </td>\n`;
+                                lCols++;
+                            }
+                            if (lCols === 1) out += `    <td width="50%"></td>\n`;
+                            out += `  </tr>\n`;
+                        }
+                        out += `</table>\n`;
+                    } else {
+                        out += `<p align="${align}">\n`;
+                        if(state.stats.showStats) {
+                            out += `  <a href="https://github.com/${state.githubUsername}"><img src="https://github-readme-stats.vercel.app/api?username=${state.githubUsername}&show_icons=true&theme=${state.stats.theme}&locale=en&hide_border=true" alt="stats" /></a>\n`;
+                        }
+                        if(state.stats.showStreak) {
+                            out += `  <a href="https://github.com/${state.githubUsername}"><img src="https://github-readme-streak-stats.herokuapp.com/?user=${state.githubUsername}&theme=${state.stats.theme}&hide_border=true" alt="streak" /></a>\n`;
+                        }
+                        if(state.stats.showLangs) {
+                            out += `<br><br>\n`;
+                            out += `  <a href="https://github.com/${state.githubUsername}"><img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${state.githubUsername}&layout=compact&theme=${state.stats.theme}&hide_border=true" alt="languages" /></a>\n`;
+                        }
+                        if(state.stats.showSnake) {
+                            out += `<br><br>\n`;
+                            out += `  <picture>\n`;
+                            out += `    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/${state.githubUsername}/${state.githubUsername}/output/github-contribution-grid-snake-dark.svg">\n`;
+                            out += `    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/${state.githubUsername}/${state.githubUsername}/output/github-contribution-grid-snake.svg">\n`;
+                            out += `    <img alt="github contribution grid snake animation" src="https://raw.githubusercontent.com/${state.githubUsername}/${state.githubUsername}/output/github-contribution-grid-snake.svg">\n`;
+                            out += `  </picture>\n`;
+                        }
+                        out += `</p>\n`;
                     }
-                    if(state.stats.showStreak) {
-                        out += `  <a href="https://github.com/${state.githubUsername}"><img src="https://github-readme-streak-stats.herokuapp.com/?user=${state.githubUsername}&theme=${state.stats.theme}&hide_border=true" alt="streak" /></a>\n`;
-                    }
-                    if(state.stats.showLangs) {
-                        out += `<br><br>\n`;
-                        out += `  <a href="https://github.com/${state.githubUsername}"><img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${state.githubUsername}&layout=compact&theme=${state.stats.theme}&hide_border=true" alt="languages" /></a>\n`;
-                    }
-                    if(state.stats.showSnake) {
-                        out += `<br><br>\n`;
-                        out += `  <picture>\n`;
-                        out += `    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/${state.githubUsername}/${state.githubUsername}/output/github-contribution-grid-snake-dark.svg">\n`;
-                        out += `    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/${state.githubUsername}/${state.githubUsername}/output/github-contribution-grid-snake.svg">\n`;
-                        out += `    <img alt="github contribution grid snake animation" src="https://raw.githubusercontent.com/${state.githubUsername}/${state.githubUsername}/output/github-contribution-grid-snake.svg">\n`;
-                        out += `  </picture>\n`;
-                    }
-                    out += `</p>\n\n`;
                     return out;
                 },
                 extras: () => {
@@ -1687,7 +1761,7 @@
                     if(state.extras.showQuote) {
                         out += `  <img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=${state.extras.quoteTheme}" alt="Quotes Card" />\n`;
                     }
-                    out += `</p>\n\n`;
+                    out += `</p>\n`;
                     return out;
                 },
                 support: () => {
@@ -1704,14 +1778,20 @@
                     if(state.support.patreon) {
                         out += `  <a href="https://patreon.com/${state.support.patreon}" target="_blank"><img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3D${state.support.patreon}%26type%3Dpatrons&style=${badgeStyle}" alt="Patreon" /></a>\n`;
                     }
-                    out += `</p>\n\n`;
+                    out += `</p>\n`;
                     return out;
                 }
             };
 
+            let renderedSections = [];
             state.order.forEach(section => {
-                md += generators[section]();
+                const content = generators[section]();
+                if (content.trim() !== "") {
+                    renderedSections.push(content);
+                }
             });
+
+            md = renderedSections.join(divider);
 
             return md;
         }
