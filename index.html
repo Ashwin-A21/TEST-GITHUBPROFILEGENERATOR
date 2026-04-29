@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Profile README Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --surface3: #30363d;
+    --border: #30363d;
+    --border2: #484f58;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #6e7681;
+    --green: #3fb950;
+    --green-dim: #238636;
+    --blue: #58a6ff;
+    --blue-dim: #1f6feb;
+    --purple: #a371f7;
+    --orange: #f0883e;
+    --red: #f85149;
+    --yellow: #d29922;
+    --accent: #79c0ff;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Header */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--purple), var(--blue));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .badge {
+    background: var(--green-dim);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid var(--green);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Main Layout */
+  .main {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    min-height: calc(100vh - 61px);
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    height: calc(100vh - 61px);
+    position: sticky;
+    top: 61px;
+  }
+
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .tab {
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    color: var(--text2);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .tab:hover { color: var(--text); background: var(--surface2); }
+  .tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+  .tab-content { display: none; padding: 20px; }
+  .tab-content.active { display: block; }
+
+  /* Form Elements */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text3);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .field-group { margin-bottom: 16px; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 6px;
+  }
+
+  input[type="text"], input[type="url"], textarea, select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 8px 12px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  input[type="text"]:focus, input[type="url"]:focus, textarea:focus, select:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+  }
+
+  textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+  .hint { font-size: 11px; color: var(--text3); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+
+  /* Skill Tags */
+  .skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .skill-tag {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--surface3);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text2);
+    user-select: none;
+  }
+
+  .skill-tag:hover { border-color: var(--blue); color: var(--blue); }
+  .skill-tag.selected { background: rgba(88, 166, 255, 0.15); border-color: var(--blue); color: var(--blue); }
+  .skill-tag.selected::before { content: '✓ '; font-size: 10px; }
+
+  /* Checkboxes */
+  .check-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+
+  .check-group input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--blue);
+    cursor: pointer;
+  }
+
+  .check-group span { font-size: 13px; color: var(--text2); }
+
+  /* Radio Buttons */
+  .radio-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+
+  .radio-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text2);
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .radio-btn:hover { border-color: var(--blue-dim); }
+  .radio-btn.selected { background: rgba(88, 166, 255, 0.1); border-color: var(--blue); color: var(--blue); }
+
+  /* Social Links Grid */
+  .social-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .social-input-wrap { position: relative; }
+  .social-prefix {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+    pointer-events: none;
+  }
+
+  .social-input-wrap input {
+    padding-left: 90px;
+  }
+
+  /* Divider */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  /* Preview Panel */
+  .preview-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .preview-toolbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .preview-tabs {
+    display: flex;
+    gap: 4px;
+  }
+
+  .preview-tab {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: all 0.2s;
+    color: var(--text2);
+    border: 1px solid transparent;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .preview-tab:hover { background: var(--surface2); color: var(--text); }
+  .preview-tab.active { background: var(--surface2); color: var(--text); border-color: var(--border); }
+
+  .btn-copy {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-dim);
+    color: var(--green);
+    border: 1px solid var(--green);
+    border-radius: var(--radius);
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+  }
+
+  .btn-copy:hover { background: var(--green); color: #000; }
+  .btn-copy.copied { background: var(--green); color: #000; }
+
+  .preview-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px;
+    background: #fff;
+    color: #1f2328;
+  }
+
+  .code-body {
+    flex: 1;
+    overflow: auto;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    display: none;
+  }
+
+  .code-body pre {
+    padding: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* Rendered README styles */
+  .readme-render h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #1f2328; }
+  .readme-render h2 { font-size: 20px; font-weight: 600; margin: 20px 0 10px; color: #1f2328; border-bottom: 1px solid #d1d9e0; padding-bottom: 6px; }
+  .readme-render h3 { font-size: 16px; font-weight: 600; margin: 16px 0 8px; color: #1f2328; }
+  .readme-render p { font-size: 14px; line-height: 1.6; margin-bottom: 12px; color: #1f2328; font-family: -apple-system, sans-serif; }
+  .readme-render a { color: #0969da; text-decoration: none; }
+  .readme-render a:hover { text-decoration: underline; }
+  .readme-render img { max-width: 100%; border-radius: 4px; }
+  .readme-render .badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+  .readme-render ul { padding-left: 20px; margin-bottom: 12px; font-family: -apple-system, sans-serif; font-size: 14px; color: #1f2328; line-height: 1.8; }
+  .readme-render code { background: rgba(175, 184, 193, 0.2); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1f2328; }
+  .readme-render hr { border: none; border-top: 1px solid #d1d9e0; margin: 20px 0; }
+  .readme-render table { border-collapse: collapse; width: 100%; margin-bottom: 16px; font-family: -apple-system, sans-serif; font-size: 13px; }
+  .readme-render th, .readme-render td { border: 1px solid #d1d9e0; padding: 6px 12px; text-align: left; }
+  .readme-render th { background: #f6f8fa; font-weight: 600; }
+  .readme-render .wave { font-size: 32px; display: inline-block; animation: wave 2.5s ease-in-out infinite; transform-origin: 70% 70%; }
+  @keyframes wave { 0%,60%,100%{transform:rotate(0deg)} 10%,30%{transform:rotate(14deg)} 20%{transform:rotate(-8deg)} 40%{transform:rotate(-4deg)} 50%{transform:rotate(10deg)} }
+  .readme-render .typing-text { font-size: 18px; font-weight: 600; color: #1f2328; }
+  .readme-render .stats-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+
+  /* Color picker row */
+  .color-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+
+  .color-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .color-swatch.active { border-color: white; box-shadow: 0 0 0 2px var(--blue); }
+
+  /* Section toggle */
+  .section-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .toggle-switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+  }
+
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+  .slider-track {
+    position: absolute;
+    inset: 0;
+    background: var(--surface3);
+    border-radius: 22px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .slider-track::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: var(--text2);
+    border-radius: 50%;
+    left: 3px;
+    top: 3px;
+    transition: 0.3s;
+  }
+
+  .toggle-switch input:checked + .slider-track { background: var(--blue-dim); }
+  .toggle-switch input:checked + .slider-track::before { transform: translateX(18px); background: white; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+  .stat-theme-picker { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .stat-theme-opt {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    transition: all 0.15s;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .stat-theme-opt:hover { border-color: var(--blue); color: var(--blue); }
+  .stat-theme-opt.active { background: rgba(88,166,255,0.15); border-color: var(--blue); color: var(--blue); }
+
+  .add-btn {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px dashed var(--border2);
+    color: var(--text2);
+    border-radius: var(--radius);
+    padding: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+
+  .add-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+  .repo-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .repo-item input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    outline: none;
+  }
+
+  .repo-item input:focus { background: var(--surface3); border-radius: 4px; padding: 2px 6px; }
+
+  .del-btn {
+    background: none;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+
+  .del-btn:hover { color: var(--red); background: rgba(248, 81, 73, 0.1); }
+
+  .header-actions { display: flex; gap: 8px; }
+  .btn-reset {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: var(--radius);
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s;
+  }
+  .btn-reset:hover { border-color: var(--red); color: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    README Forge
+  </div>
+  <div style="font-size:12px; color: var(--text3); font-family:'JetBrains Mono',monospace;">Build your GitHub Profile README</div>
+  <div class="header-actions">
+    <button class="btn-reset" onclick="resetAll()">↩ Reset</button>
+    <span class="badge">LIVE PREVIEW</span>
+  </div>
+</div>
+
+<div class="main">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('basics')">Basics</div>
+      <div class="tab" onclick="switchTab('skills')">Skills</div>
+      <div class="tab" onclick="switchTab('social')">Social</div>
+      <div class="tab" onclick="switchTab('stats')">Stats</div>
+      <div class="tab" onclick="switchTab('extras')">Extras</div>
+    </div>
+
+    <!-- BASICS TAB -->
+    <div class="tab-content active" id="tab-basics">
+      <div class="section-label">Identity</div>
+
+      <div class="field-group">
+        <label>Display Name</label>
+        <input type="text" id="display-name" placeholder="Jane Doe" oninput="render()">
+      </div>
+      <div class="field-group">
+        <label>GitHub Username</label>
+        <input type="text" id="username" placeholder="janedoe" oninput="render()">
+      </div>
+      <div class="field-group">
+        <label>Title / Role</label>
+        <input type="text" id="title" placeholder="Full Stack Developer · Open Source Enthusiast" oninput="render()">
+      </div>
+      <div class="field-group">
+        <label>One-liner Bio</label>
+        <textarea id="bio" placeholder="Passionate about building things that matter. I turn coffee into code ☕" oninput="render()"></textarea>
+      </div>
+
+      <hr class="divider">
+      <div class="section-label">About Me</div>
+
+      <div class="field-group">
+        <label>Currently Working On</label>
+        <input type="text" id="working-on" placeholder="A React dashboard for real-time analytics" oninput="render()">
+      </div>
+      <div class="field-group">
+        <label>Currently Learning</label>
+        <input type="text" id="learning" placeholder="Rust, WebAssembly, Machine Learning" oninput="render()">
+      </div>
+      <div class="field-group">
+        <label>Looking to Collaborate</label>
+        <input type="text" id="collaborate" placeholder="Open source projects, startups" oninput="render()">
+      </div>
+      <div class="field-group">
+        <label>Ask Me About</label>
+        <input type="text" id="ask-me" placeholder="React, Node.js, System Design" oninput="render()">
+      </div>
+      <div class="field-group">
+        <label>Fun Fact</label>
+        <input type="text" id="fun-fact" placeholder="I debug faster with lofi music 🎵" oninput="render()">
+      </div>
+      <div class="field-group">
+        <label>Email (optional)</label>
+        <input type="text" id="email" placeholder="jane@example.com" oninput="render()">
+      </div>
+
+      <hr class="divider">
+      <div class="section-label">Header Style</div>
+      <div class="field-group">
+        <label>Greeting Emoji</label>
+        <div class="radio-group">
+          <div class="radio-btn selected" onclick="selectRadio(this,'emoji')" data-val="👋">👋 Wave</div>
+          <div class="radio-btn" onclick="selectRadio(this,'emoji')" data-val="🚀">🚀 Rocket</div>
+          <div class="radio-btn" onclick="selectRadio(this,'emoji')" data-val="✨">✨ Sparkle</div>
+          <div class="radio-btn" onclick="selectRadio(this,'emoji')" data-val="💻">💻 Code</div>
+          <div class="radio-btn" onclick="selectRadio(this,'emoji')" data-val="">None</div>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Animated Greeting</label>
+        <div class="radio-group">
+          <div class="radio-btn selected" onclick="selectRadio(this,'greeting-style')" data-val="wave">Wave hand</div>
+          <div class="radio-btn" onclick="selectRadio(this,'greeting-style')" data-val="typing">Typing text</div>
+          <div class="radio-btn" onclick="selectRadio(this,'greeting-style')" data-val="banner">Banner image</div>
+          <div class="radio-btn" onclick="selectRadio(this,'greeting-style')" data-val="none">Plain</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKILLS TAB -->
+    <div class="tab-content" id="tab-skills">
+      <div class="section-label">Languages</div>
+      <div class="skills-container" id="skills-languages">
+        <div class="skill-tag" onclick="toggleSkill(this)">JavaScript</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">TypeScript</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Python</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Rust</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Go</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Java</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">C++</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">C#</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">PHP</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Ruby</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Swift</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Kotlin</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Dart</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Scala</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">R</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Shell</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">SQL</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">HTML</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">CSS</div>
+      </div>
+
+      <hr class="divider">
+      <div class="section-label">Frontend</div>
+      <div class="skills-container" id="skills-frontend">
+        <div class="skill-tag" onclick="toggleSkill(this)">React</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Vue.js</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Angular</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Next.js</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Nuxt.js</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Svelte</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Tailwind CSS</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Bootstrap</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Sass</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Redux</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">GraphQL</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Three.js</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">WebGL</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Flutter</div>
+      </div>
+
+      <hr class="divider">
+      <div class="section-label">Backend</div>
+      <div class="skills-container" id="skills-backend">
+        <div class="skill-tag" onclick="toggleSkill(this)">Node.js</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Express</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Django</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">FastAPI</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Flask</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Spring Boot</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Laravel</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Rails</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">NestJS</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Gin</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">gRPC</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">REST API</div>
+      </div>
+
+      <hr class="divider">
+      <div class="section-label">Databases</div>
+      <div class="skills-container" id="skills-db">
+        <div class="skill-tag" onclick="toggleSkill(this)">PostgreSQL</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">MySQL</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">MongoDB</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Redis</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">SQLite</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Elasticsearch</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Supabase</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Firebase</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">DynamoDB</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Prisma</div>
+      </div>
+
+      <hr class="divider">
+      <div class="section-label">DevOps & Cloud</div>
+      <div class="skills-container" id="skills-devops">
+        <div class="skill-tag" onclick="toggleSkill(this)">Docker</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Kubernetes</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">AWS</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">GCP</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Azure</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Vercel</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Netlify</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Terraform</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">CI/CD</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">GitHub Actions</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Nginx</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Linux</div>
+      </div>
+
+      <hr class="divider">
+      <div class="section-label">AI / ML</div>
+      <div class="skills-container" id="skills-ai">
+        <div class="skill-tag" onclick="toggleSkill(this)">TensorFlow</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">PyTorch</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Scikit-learn</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Pandas</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">NumPy</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">OpenCV</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Hugging Face</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">LangChain</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">OpenAI API</div>
+      </div>
+
+      <hr class="divider">
+      <div class="section-label">Tools</div>
+      <div class="skills-container" id="skills-tools">
+        <div class="skill-tag" onclick="toggleSkill(this)">Git</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">VS Code</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Vim/Neovim</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Figma</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Postman</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Jira</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Notion</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Slack</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Linux</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Webpack</div>
+        <div class="skill-tag" onclick="toggleSkill(this)">Vite</div>
+      </div>
+
+      <hr class="divider">
+      <div class="section-label">Badge Style</div>
+      <div class="radio-group">
+        <div class="radio-btn selected" onclick="selectRadio(this,'badge-style')" data-val="flat">flat</div>
+        <div class="radio-btn" onclick="selectRadio(this,'badge-style')" data-val="flat-square">flat-square</div>
+        <div class="radio-btn" onclick="selectRadio(this,'badge-style')" data-val="for-the-badge">for-the-badge</div>
+        <div class="radio-btn" onclick="selectRadio(this,'badge-style')" data-val="plastic">plastic</div>
+      </div>
+    </div>
+
+    <!-- SOCIAL TAB -->
+    <div class="tab-content" id="tab-social">
+      <div class="section-label">Social Links</div>
+      <div class="field-group">
+        <label>Twitter / X</label>
+        <div class="social-input-wrap">
+          <span class="social-prefix">twitter.com/</span>
+          <input type="text" id="social-twitter" placeholder="username" oninput="render()" style="padding-left:90px">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>LinkedIn</label>
+        <div class="social-input-wrap">
+          <span class="social-prefix">linkedin.com/in/</span>
+          <input type="text" id="social-linkedin" placeholder="username" oninput="render()" style="padding-left:110px">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>YouTube</label>
+        <div class="social-input-wrap">
+          <span class="social-prefix">youtube.com/</span>
+          <input type="text" id="social-youtube" placeholder="@channel" oninput="render()" style="padding-left:95px">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Dev.to</label>
+        <div class="social-input-wrap">
+          <span class="social-prefix">dev.to/</span>
+          <input type="text" id="social-devto" placeholder="username" oninput="render()" style="padding-left:65px">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Medium</label>
+        <div class="social-input-wrap">
+          <span class="social-prefix">medium.com/@</span>
+          <input type="text" id="social-medium" placeholder="username" oninput="render()" style="padding-left:100px">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Hashnode</label>
+        <div class="social-input-wrap">
+          <span class="social-prefix">hashnode.com/@</span>
+          <input type="text" id="social-hashnode" placeholder="username" oninput="render()" style="padding-left:110px">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Stack Overflow</label>
+        <div class="social-input-wrap">
+          <span class="social-prefix">stackoverflow.com/users/</span>
+          <input type="text" id="social-stackoverflow" placeholder="id" oninput="render()" style="padding-left:155px">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Discord (ID)</label>
+        <input type="text" id="social-discord" placeholder="username#0000" oninput="render()">
+      </div>
+      <div class="field-group">
+        <label>Website / Portfolio</label>
+        <input type="url" id="social-website" placeholder="https://yoursite.com" oninput="render()">
+      </div>
+      <div class="field-group">
+        <label>Buy me a Coffee</label>
+        <div class="social-input-wrap">
+          <span class="social-prefix">buymeacoffee.com/</span>
+          <input type="text" id="social-coffee" placeholder="username" oninput="render()" style="padding-left:125px">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Ko-fi</label>
+        <div class="social-input-wrap">
+          <span class="social-prefix">ko-fi.com/</span>
+          <input type="text" id="social-kofi" placeholder="username" oninput="render()" style="padding-left:75px">
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS TAB -->
+    <div class="tab-content" id="tab-stats">
+      <div class="section-label">GitHub Stats Card</div>
+      <div class="section-toggle">
+        <span style="font-size:13px; color:var(--text2)">Show Stats Card</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="show-stats" checked onchange="render()">
+          <span class="slider-track"></span>
+        </label>
+      </div>
+      <div class="field-group">
+        <label>Theme</label>
+        <div class="stat-theme-picker">
+          <div class="stat-theme-opt active" onclick="selectStatTheme(this)" data-val="default">default</div>
+          <div class="stat-theme-opt" onclick="selectStatTheme(this)" data-val="dark">dark</div>
+          <div class="stat-theme-opt" onclick="selectStatTheme(this)" data-val="radical">radical</div>
+          <div class="stat-theme-opt" onclick="selectStatTheme(this)" data-val="merko">merko</div>
+          <div class="stat-theme-opt" onclick="selectStatTheme(this)" data-val="gruvbox">gruvbox</div>
+          <div class="stat-theme-opt" onclick="selectStatTheme(this)" data-val="tokyonight">tokyonight</div>
+          <div class="stat-theme-opt" onclick="selectStatTheme(this)" data-val="onedark">onedark</div>
+          <div class="stat-theme-opt" onclick="selectStatTheme(this)" data-val="cobalt">cobalt</div>
+          <div class="stat-theme-opt" onclick="selectStatTheme(this)" data-val="synthwave">synthwave</div>
+          <div class="stat-theme-opt" onclick="selectStatTheme(this)" data-val="highcontrast">highcontrast</div>
+          <div class="stat-theme-opt" onclick="selectStatTheme(this)" data-val="dracula">dracula</div>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Options</label>
+        <label class="check-group"><input type="checkbox" id="stat-private" onchange="render()"><span>Count private commits</span></label>
+        <label class="check-group"><input type="checkbox" id="stat-streak" checked onchange="render()"><span>Show streak stats</span></label>
+        <label class="check-group"><input type="checkbox" id="stat-langs" checked onchange="render()"><span>Show top languages</span></label>
+        <label class="check-group"><input type="checkbox" id="stat-trophies" onchange="render()"><span>Show GitHub trophies</span></label>
+        <label class="check-group"><input type="checkbox" id="stat-activity" onchange="render()"><span>Show activity graph</span></label>
+        <label class="check-group"><input type="checkbox" id="stat-visitors" onchange="render()"><span>Show visitor count badge</span></label>
+      </div>
+      <div class="field-group">
+        <label>Languages card layout</label>
+        <div class="radio-group">
+          <div class="radio-btn selected" onclick="selectRadio(this,'lang-layout')" data-val="default">default</div>
+          <div class="radio-btn" onclick="selectRadio(this,'lang-layout')" data-val="compact">compact</div>
+          <div class="radio-btn" onclick="selectRadio(this,'lang-layout')" data-val="donut">donut</div>
+          <div class="radio-btn" onclick="selectRadio(this,'lang-layout')" data-val="pie">pie</div>
+        </div>
+      </div>
+
+      <hr class="divider">
+      <div class="section-label">Pinned Repositories</div>
+      <div id="repos-list">
+        <div class="repo-item">
+          <input placeholder="username/repo-name" oninput="render()">
+          <button class="del-btn" onclick="this.parentElement.remove(); render()">✕</button>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addRepo()">+ Add Repository</button>
+    </div>
+
+    <!-- EXTRAS TAB -->
+    <div class="tab-content" id="tab-extras">
+      <div class="section-label">Sections to Include</div>
+      <label class="check-group"><input type="checkbox" id="extra-quote" onchange="render()"><span>Random Dev Quote</span></label>
+      <label class="check-group"><input type="checkbox" id="extra-snake" onchange="render()"><span>Snake contribution graph</span></label>
+      <label class="check-group"><input type="checkbox" id="extra-blog" onchange="render()"><span>Latest blog posts section</span></label>
+      <label class="check-group"><input type="checkbox" id="extra-spotify" onchange="render()"><span>Spotify Now Playing</span></label>
+      <label class="check-group"><input type="checkbox" id="extra-waka" onchange="render()"><span>WakaTime stats</span></label>
+
+      <hr class="divider">
+      <div class="section-label">Profile Views Counter</div>
+      <label class="check-group"><input type="checkbox" id="extra-views" onchange="render()"><span>Show profile views</span></label>
+
+      <hr class="divider">
+      <div class="section-label">Custom Sections</div>
+      <div class="field-group">
+        <label>Certifications / Achievements</label>
+        <textarea id="extra-certs" placeholder="AWS Certified Developer, Google Cloud Professional..." oninput="render()"></textarea>
+      </div>
+      <div class="field-group">
+        <label>Open Source Contributions</label>
+        <textarea id="extra-oss" placeholder="Contributed to React, Node.js, Kubernetes..." oninput="render()"></textarea>
+      </div>
+      <div class="field-group">
+        <label>Support / Sponsorship message</label>
+        <input type="text" id="extra-support" placeholder="If you find my work helpful, consider buying me a coffee!" oninput="render()">
+      </div>
+      <div class="field-group">
+        <label>Footer / Closing message</label>
+        <input type="text" id="extra-footer" placeholder="Thanks for visiting! Let's connect and build something awesome 🚀" oninput="render()">
+      </div>
+
+      <hr class="divider">
+      <div class="section-label">Alignment</div>
+      <div class="radio-group">
+        <div class="radio-btn" onclick="selectRadio(this,'align')" data-val="left">Left</div>
+        <div class="radio-btn selected" onclick="selectRadio(this,'align')" data-val="center">Center</div>
+        <div class="radio-btn" onclick="selectRadio(this,'align')" data-val="right">Right</div>
+      </div>
+
+      <hr class="divider">
+      <div class="section-label">Decorative Elements</div>
+      <label class="check-group"><input type="checkbox" id="extra-dividers" checked onchange="render()"><span>Section dividers</span></label>
+      <label class="check-group"><input type="checkbox" id="extra-emojis" checked onchange="render()"><span>Section emojis</span></label>
+    </div>
+  </div>
+
+  <!-- PREVIEW PANEL -->
+  <div class="preview-panel">
+    <div class="preview-toolbar">
+      <div class="preview-tabs">
+        <div class="preview-tab active" onclick="switchPreview('preview')">Preview</div>
+        <div class="preview-tab" onclick="switchPreview('markdown')">Markdown</div>
+      </div>
+      <button class="btn-copy" id="copy-btn" onclick="copyMarkdown()">⎘ Copy Markdown</button>
+    </div>
+
+    <div class="preview-body" id="preview-body">
+      <div class="readme-render" id="preview-render"></div>
+    </div>
+    <div class="code-body" id="code-body">
+      <pre id="code-pre"></pre>
+    </div>
+  </div>
+</div>
+
+<script>
+// State
+const state = {
+  emoji: '👋',
+  'greeting-style': 'wave',
+  'badge-style': 'flat',
+  'lang-layout': 'default',
+  align: 'center',
+  statTheme: 'default'
+};
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function switchPreview(mode) {
+  document.querySelectorAll('.preview-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  if (mode === 'preview') {
+    document.getElementById('preview-body').style.display = 'block';
+    document.getElementById('code-body').style.display = 'none';
+  } else {
+    document.getElementById('preview-body').style.display = 'none';
+    document.getElementById('code-body').style.display = 'block';
+  }
+}
+
+function toggleSkill(el) {
+  el.classList.toggle('selected');
+  render();
+}
+
+function selectRadio(el, group) {
+  document.querySelectorAll(`[onclick*="${group}"]`).forEach(r => r.classList.remove('selected'));
+  el.classList.add('selected');
+  state[group] = el.dataset.val;
+  render();
+}
+
+function selectStatTheme(el) {
+  document.querySelectorAll('.stat-theme-opt').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+  state.statTheme = el.dataset.val;
+  render();
+}
+
+function val(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function checked(id) { const el = document.getElementById(id); return el ? el.checked : false; }
+
+function getSelectedSkills() {
+  return [...document.querySelectorAll('.skill-tag.selected')].map(t => t.textContent.replace('✓ ', '').trim());
+}
+
+function getSkillBadge(skill) {
+  const style = state['badge-style'];
+  const map = {
+    'JavaScript': 'javascript-F7DF1E?logo=javascript&logoColor=black',
+    'TypeScript': 'typescript-3178C6?logo=typescript&logoColor=white',
+    'Python': 'python-3776AB?logo=python&logoColor=white',
+    'Rust': 'rust-000000?logo=rust&logoColor=white',
+    'Go': 'go-00ADD8?logo=go&logoColor=white',
+    'Java': 'java-007396?logo=java&logoColor=white',
+    'C++': 'c++-00599C?logo=c%2B%2B&logoColor=white',
+    'C#': 'c%23-239120?logo=c-sharp&logoColor=white',
+    'PHP': 'php-777BB4?logo=php&logoColor=white',
+    'Ruby': 'ruby-CC342D?logo=ruby&logoColor=white',
+    'Swift': 'swift-F05138?logo=swift&logoColor=white',
+    'Kotlin': 'kotlin-7F52FF?logo=kotlin&logoColor=white',
+    'Dart': 'dart-0175C2?logo=dart&logoColor=white',
+    'Scala': 'scala-DC322F?logo=scala&logoColor=white',
+    'R': 'r-276DC3?logo=r&logoColor=white',
+    'Shell': 'shell_script-121011?logo=gnu-bash&logoColor=white',
+    'SQL': 'sql-4479A1?logo=mysql&logoColor=white',
+    'HTML': 'html5-E34F26?logo=html5&logoColor=white',
+    'CSS': 'css3-1572B6?logo=css3&logoColor=white',
+    'React': 'react-20232A?logo=react&logoColor=61DAFB',
+    'Vue.js': 'vuedotjs-4FC08D?logo=vuedotjs&logoColor=white',
+    'Angular': 'angular-DD0031?logo=angular&logoColor=white',
+    'Next.js': 'nextdotjs-000000?logo=nextdotjs&logoColor=white',
+    'Nuxt.js': 'nuxtdotjs-00DC82?logo=nuxtdotjs&logoColor=white',
+    'Svelte': 'svelte-FF3E00?logo=svelte&logoColor=white',
+    'Tailwind CSS': 'tailwindcss-38B2AC?logo=tailwind-css&logoColor=white',
+    'Bootstrap': 'bootstrap-7952B3?logo=bootstrap&logoColor=white',
+    'Sass': 'sass-CC6699?logo=sass&logoColor=white',
+    'Redux': 'redux-593D88?logo=redux&logoColor=white',
+    'GraphQL': 'graphql-E10098?logo=graphql&logoColor=white',
+    'Three.js': 'threedotjs-000000?logo=three.js&logoColor=white',
+    'Flutter': 'flutter-02569B?logo=flutter&logoColor=white',
+    'Node.js': 'nodedotjs-339933?logo=nodedotjs&logoColor=white',
+    'Express': 'express-000000?logo=express&logoColor=white',
+    'Django': 'django-092E20?logo=django&logoColor=white',
+    'FastAPI': 'fastapi-009688?logo=fastapi&logoColor=white',
+    'Flask': 'flask-000000?logo=flask&logoColor=white',
+    'Spring Boot': 'springboot-6DB33F?logo=spring-boot&logoColor=white',
+    'Laravel': 'laravel-FF2D20?logo=laravel&logoColor=white',
+    'NestJS': 'nestjs-E0234E?logo=nestjs&logoColor=white',
+    'PostgreSQL': 'postgresql-316192?logo=postgresql&logoColor=white',
+    'MySQL': 'mysql-005C84?logo=mysql&logoColor=white',
+    'MongoDB': 'mongodb-4EA94B?logo=mongodb&logoColor=white',
+    'Redis': 'redis-DD0031?logo=redis&logoColor=white',
+    'SQLite': 'sqlite-07405E?logo=sqlite&logoColor=white',
+    'Firebase': 'firebase-FFCA28?logo=firebase&logoColor=black',
+    'Supabase': 'supabase-3ECF8E?logo=supabase&logoColor=white',
+    'Docker': 'docker-0db7ed?logo=docker&logoColor=white',
+    'Kubernetes': 'kubernetes-326ce5?logo=kubernetes&logoColor=white',
+    'AWS': 'amazon_aws-FF9900?logo=amazonaws&logoColor=white',
+    'GCP': 'google_cloud-4285F4?logo=googlecloud&logoColor=white',
+    'Azure': 'azure-0078D4?logo=microsoftazure&logoColor=white',
+    'Vercel': 'vercel-000000?logo=vercel&logoColor=white',
+    'Netlify': 'netlify-00C7B7?logo=netlify&logoColor=white',
+    'Terraform': 'terraform-7B42BC?logo=terraform&logoColor=white',
+    'GitHub Actions': 'github_actions-2671E5?logo=githubactions&logoColor=white',
+    'Linux': 'linux-FCC624?logo=linux&logoColor=black',
+    'TensorFlow': 'tensorflow-FF6F00?logo=tensorflow&logoColor=white',
+    'PyTorch': 'pytorch-EE4C2C?logo=pytorch&logoColor=white',
+    'Figma': 'figma-F24E1E?logo=figma&logoColor=white',
+    'VS Code': 'vscode-007ACC?logo=visualstudiocode&logoColor=white',
+    'Git': 'git-F05032?logo=git&logoColor=white',
+    'Postman': 'postman-FF6C37?logo=postman&logoColor=white',
+    'Pandas': 'pandas-150458?logo=pandas&logoColor=white',
+    'NumPy': 'numpy-013243?logo=numpy&logoColor=white',
+    'Scikit-learn': 'scikit_learn-F7931E?logo=scikit-learn&logoColor=white',
+    'LangChain': 'langchain-1C3C3C?logo=langchain&logoColor=white',
+    'Vite': 'vite-646CFF?logo=vite&logoColor=white',
+    'Webpack': 'webpack-8DD6F9?logo=webpack&logoColor=black',
+    'Notion': 'notion-000000?logo=notion&logoColor=white',
+    'Prisma': 'prisma-3982CE?logo=prisma&logoColor=white',
+  };
+  const badge = map[skill] || `${encodeURIComponent(skill)}-555555`;
+  return `https://img.shields.io/badge/${badge}&style=${style}`;
+}
+
+function addRepo() {
+  const list = document.getElementById('repos-list');
+  const div = document.createElement('div');
+  div.className = 'repo-item';
+  div.innerHTML = `<input placeholder="username/repo-name" oninput="render()"><button class="del-btn" onclick="this.parentElement.remove(); render()">✕</button>`;
+  list.appendChild(div);
+}
+
+function getRepos() {
+  return [...document.querySelectorAll('#repos-list input')].map(i => i.value.trim()).filter(Boolean);
+}
+
+function generateMarkdown() {
+  const name = val('display-name') || 'Your Name';
+  const username = val('username') || 'yourusername';
+  const title = val('title');
+  const bio = val('bio');
+  const workingOn = val('working-on');
+  const learning = val('learning');
+  const collaborate = val('collaborate');
+  const askMe = val('ask-me');
+  const funFact = val('fun-fact');
+  const email = val('email');
+  const skills = getSelectedSkills();
+  const align = state.align;
+  const greetStyle = state['greeting-style'];
+  const emoji = state.emoji;
+  const statTheme = state.statTheme;
+  const useEmojis = checked('extra-emojis');
+  const useDividers = checked('extra-dividers');
+  const div = useDividers ? '\n\n---\n\n' : '\n\n';
+
+  let md = '';
+
+  // Header
+  if (greetStyle === 'banner') {
+    md += `<div align="${align}">\n<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=200&section=header&text=Hi%20I'm%20${encodeURIComponent(name)}!&fontSize=50&fontAlignY=35&animation=twinkling&fontColor=white" />\n</div>\n\n`;
+  } else if (greetStyle === 'typing') {
+    md += `<div align="${align}">\n<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&center=true&vCenter=true&width=435&lines=Hi%2C+I'm+${encodeURIComponent(name)}!+${emoji};${encodeURIComponent(title || 'Developer')}" alt="Typing SVG" />\n</div>\n\n`;
+  } else if (greetStyle === 'wave') {
+    md += `<h1 align="${align}">Hi ${emoji ? `<img src="https://media.giphy.com/media/hvRJCLFzcasrR4ia7z/giphy.gif" width="35"> ` : ''}I'm ${name}!</h1>\n\n`;
+  } else {
+    md += `# Hi, I'm ${name}! ${emoji}\n\n`;
+  }
+
+  if (title) md += `<h3 align="${align}">${title}</h3>\n\n`;
+
+  // Visitor badge
+  if (checked('extra-views')) {
+    md += `<div align="${align}">\n<img src="https://visitor-badge.laobi.icu/badge?page_id=${username}.${username}" />\n</div>\n\n`;
+  }
+
+  if (bio) md += `${align === 'center' ? `<p align="center">${bio}</p>` : bio}\n\n`;
+
+  if (useDividers) md += `---\n\n`;
+
+  // About Me
+  const aboutLines = [];
+  if (workingOn) aboutLines.push(`- ${useEmojis ? '🔭 ' : ''}**Currently working on:** ${workingOn}`);
+  if (learning) aboutLines.push(`- ${useEmojis ? '🌱 ' : ''}**Currently learning:** ${learning}`);
+  if (collaborate) aboutLines.push(`- ${useEmojis ? '👯 ' : ''}**Looking to collaborate on:** ${collaborate}`);
+  if (askMe) aboutLines.push(`- ${useEmojis ? '💬 ' : ''}**Ask me about:** ${askMe}`);
+  if (email) aboutLines.push(`- ${useEmojis ? '📫 ' : ''}**Reach me at:** ${email}`);
+  if (funFact) aboutLines.push(`- ${useEmojis ? '⚡ ' : ''}**Fun fact:** ${funFact}`);
+
+  if (aboutLines.length > 0) {
+    md += `## ${useEmojis ? '👨‍💻 ' : ''}About Me\n\n${aboutLines.join('\n')}\n\n`;
+    if (useDividers) md += `---\n\n`;
+  }
+
+  // Skills
+  if (skills.length > 0) {
+    md += `## ${useEmojis ? '🛠️ ' : ''}Tech Stack\n\n`;
+    md += `<div align="${align}">\n\n`;
+    skills.forEach(skill => {
+      md += `<img src="${getSkillBadge(skill)}" alt="${skill}" />\n`;
+    });
+    md += `\n</div>\n\n`;
+    if (useDividers) md += `---\n\n`;
+  }
+
+  // Social Links
+  const socials = [
+    { id: 'social-twitter', icon: 'twitter', label: 'Twitter', url: v => `https://twitter.com/${v}` },
+    { id: 'social-linkedin', icon: 'linkedin', label: 'LinkedIn', url: v => `https://linkedin.com/in/${v}` },
+    { id: 'social-youtube', icon: 'youtube', label: 'YouTube', url: v => `https://youtube.com/${v}` },
+    { id: 'social-devto', icon: 'devdotto', label: 'Dev.to', url: v => `https://dev.to/${v}` },
+    { id: 'social-medium', icon: 'medium', label: 'Medium', url: v => `https://medium.com/@${v}` },
+    { id: 'social-stackoverflow', icon: 'stackoverflow', label: 'Stack Overflow', url: v => `https://stackoverflow.com/users/${v}` },
+    { id: 'social-website', icon: 'githubpages', label: 'Website', url: v => v },
+    { id: 'social-coffee', icon: 'buymeacoffee', label: 'Buy Me A Coffee', url: v => `https://buymeacoffee.com/${v}` },
+    { id: 'social-kofi', icon: 'kofi', label: 'Ko-fi', url: v => `https://ko-fi.com/${v}` },
+  ];
+
+  const activeSocials = socials.filter(s => val(s.id));
+  if (activeSocials.length > 0) {
+    md += `## ${useEmojis ? '🌐 ' : ''}Connect with Me\n\n<div align="${align}">\n\n`;
+    activeSocials.forEach(s => {
+      const v = val(s.id);
+      const url = s.url(v);
+      md += `<a href="${url}" target="_blank"><img src="https://img.shields.io/badge/${s.label}-${s.icon === 'twitter' ? '1DA1F2' : s.icon === 'linkedin' ? '0077B5' : s.icon === 'youtube' ? 'FF0000' : s.icon === 'devdotto' ? '0A0A0A' : s.icon === 'medium' ? '12100E' : '000000'}?style=for-the-badge&logo=${s.icon}&logoColor=white" /></a>\n`;
+    });
+    md += `\n</div>\n\n`;
+    if (useDividers) md += `---\n\n`;
+  }
+
+  // GitHub Stats
+  if (checked('show-stats') && username) {
+    md += `## ${useEmojis ? '📊 ' : ''}GitHub Stats\n\n<div align="${align}">\n\n`;
+    const privateParam = checked('stat-private') ? '&count_private=true' : '';
+    md += `<img src="https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${statTheme}${privateParam}" alt="GitHub Stats" />\n\n`;
+    if (checked('stat-streak')) {
+      md += `<img src="https://github-readme-streak-stats.herokuapp.com/?user=${username}&theme=${statTheme}" alt="GitHub Streak" />\n\n`;
+    }
+    if (checked('stat-langs')) {
+      md += `<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&theme=${statTheme}&layout=${state['lang-layout']}" alt="Top Languages" />\n\n`;
+    }
+    md += `</div>\n\n`;
+
+    if (checked('stat-trophies')) {
+      md += `<div align="${align}">\n<img src="https://github-profile-trophy.vercel.app/?username=${username}&theme=${statTheme}&column=7" alt="Trophies" />\n</div>\n\n`;
+    }
+    if (checked('stat-activity')) {
+      md += `<div align="${align}">\n<img src="https://github-readme-activity-graph.vercel.app/graph?username=${username}&theme=${statTheme === 'default' ? 'github' : statTheme}" alt="Activity Graph" />\n</div>\n\n`;
+    }
+    if (useDividers) md += `---\n\n`;
+  }
+
+  // Pinned Repos
+  const repos = getRepos();
+  if (repos.length > 0) {
+    md += `## ${useEmojis ? '📌 ' : ''}Pinned Projects\n\n<div align="${align}">\n\n`;
+    repos.forEach(repo => {
+      md += `<a href="https://github.com/${repo}">\n  <img src="https://github-readme-stats.vercel.app/api/pin/?username=${repo.split('/')[0]}&repo=${repo.split('/')[1]}&theme=${statTheme}" />\n</a>\n`;
+    });
+    md += `\n</div>\n\n`;
+    if (useDividers) md += `---\n\n`;
+  }
+
+  // Extras
+  if (checked('extra-snake') && username) {
+    md += `## ${useEmojis ? '🐍 ' : ''}Contribution Snake\n\n<div align="${align}">\n<img src="https://raw.githubusercontent.com/${username}/${username}/output/github-contribution-grid-snake.svg" alt="Snake animation" />\n</div>\n\n`;
+    if (useDividers) md += `---\n\n`;
+  }
+
+  if (checked('extra-quote')) {
+    md += `<div align="${align}">\n<img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=${statTheme === 'default' ? 'light' : 'dark'}" alt="Dev Quote" />\n</div>\n\n`;
+    if (useDividers) md += `---\n\n`;
+  }
+
+  if (checked('extra-waka') && username) {
+    md += `## ${useEmojis ? '⏱️ ' : ''}WakaTime Stats\n\n<div align="${align}">\n<img src="https://github-readme-stats.vercel.app/api/wakatime?username=${username}&theme=${statTheme}" alt="WakaTime Stats" />\n</div>\n\n`;
+    if (useDividers) md += `---\n\n`;
+  }
+
+  if (checked('extra-blog')) {
+    md += `## ${useEmojis ? '📝 ' : ''}Latest Blog Posts\n\n<!-- BLOG-POST-LIST:START -->\n<!-- BLOG-POST-LIST:END -->\n\n`;
+    if (useDividers) md += `---\n\n`;
+  }
+
+  if (checked('extra-spotify')) {
+    md += `## ${useEmojis ? '🎵 ' : ''}Spotify Now Playing\n\n<div align="${align}">\n<img src="https://spotify-recently-played-readme.vercel.app/api?user=YOUR_SPOTIFY_USER_ID" alt="Spotify" />\n</div>\n\n`;
+    if (useDividers) md += `---\n\n`;
+  }
+
+  const certs = val('extra-certs');
+  if (certs) {
+    md += `## ${useEmojis ? '🏆 ' : ''}Certifications\n\n${certs}\n\n`;
+    if (useDividers) md += `---\n\n`;
+  }
+
+  const oss = val('extra-oss');
+  if (oss) {
+    md += `## ${useEmojis ? '🤝 ' : ''}Open Source\n\n${oss}\n\n`;
+    if (useDividers) md += `---\n\n`;
+  }
+
+  const support = val('extra-support');
+  if (support) {
+    md += `<div align="${align}">\n\n${support}\n\n</div>\n\n`;
+  }
+
+  // Footer
+  if (checked('stat-visitors') && username) {
+    md += `<div align="${align}">\n<img src="https://komarev.com/ghpvc/?username=${username}&color=blueviolet&style=flat-square&label=Profile+Views" />\n</div>\n\n`;
+  }
+
+  const footer = val('extra-footer');
+  if (footer) {
+    md += `<div align="${align}">\n<p>${footer}</p>\n</div>\n\n`;
+  }
+
+  if (checked('extra-dividers')) {
+    md += `<div align="${align}">\n<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=100&section=footer" />\n</div>\n`;
+  }
+
+  return md;
+}
+
+function renderPreview(md) {
+  let html = md
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    // Undo for allowed tags
+    .replace(/&lt;div align="([^"]*)"&gt;/g, '<div align="$1">')
+    .replace(/&lt;\/div&gt;/g, '</div>')
+    .replace(/&lt;img src="([^"]*)" alt="([^"]*)" ?\/&gt;/g, '<img src="$1" alt="$2" style="max-height:160px;margin:4px;" />')
+    .replace(/&lt;img src="([^"]*)" \/&gt;/g, '<img src="$1" style="max-height:160px;margin:4px;" />')
+    .replace(/&lt;a href="([^"]*)"[^&]*&gt;/g, '<a href="$1" target="_blank">')
+    .replace(/&lt;\/a&gt;/g, '</a>')
+    .replace(/&lt;p&gt;(.*?)&lt;\/p&gt;/g, '<p>$1</p>')
+    .replace(/&lt;p align="([^"]*)"&gt;(.*?)&lt;\/p&gt;/g, '<p align="$1">$2</p>')
+    .replace(/&lt;h1 align="([^"]*)"&gt;(.*?)&lt;\/h1&gt;/g, '<h1 align="$1">$2</h1>')
+    .replace(/&lt;h3 align="([^"]*)"&gt;(.*?)&lt;\/h3&gt;/g, '<h3 align="$1">$2</h3>')
+    // Comments
+    .replace(/&lt;!-- [^&]* --&gt;/g, '')
+    // Headers
+    .replace(/^## (.*?)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.*?)$/gm, '<h1>$1</h1>')
+    // Bold
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Links
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+    // List items
+    .replace(/^- (.*?)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+    // Code
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    // HR
+    .replace(/^---$/gm, '<hr>')
+    // Paragraphs
+    .replace(/\n\n/g, '<br><br>');
+
+  return html;
+}
+
+function render() {
+  const md = generateMarkdown();
+  document.getElementById('preview-render').innerHTML = '<div class="readme-render">' + renderPreview(md) + '</div>';
+  document.getElementById('code-pre').textContent = md;
+}
+
+async function copyMarkdown() {
+  const md = generateMarkdown();
+  try {
+    await navigator.clipboard.writeText(md);
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '⎘ Copy Markdown'; btn.classList.remove('copied'); }, 2000);
+  } catch(e) {
+    const pre = document.getElementById('code-pre');
+    document.getElementById('preview-body').style.display = 'none';
+    document.getElementById('code-body').style.display = 'block';
+    pre.textContent = generateMarkdown();
+    alert('Auto-copy failed — the Markdown tab is now open. Select all and copy!');
+  }
+}
+
+function resetAll() {
+  if (!confirm('Reset all fields?')) return;
+  document.querySelectorAll('input[type="text"], input[type="url"], textarea').forEach(i => { i.value = ''; });
+  document.querySelectorAll('input[type="checkbox"]').forEach(i => { i.checked = false; });
+  document.getElementById('show-stats').checked = true;
+  document.getElementById('stat-streak').checked = true;
+  document.getElementById('stat-langs').checked = true;
+  document.getElementById('extra-dividers').checked = true;
+  document.getElementById('extra-emojis').checked = true;
+  document.querySelectorAll('.skill-tag').forEach(t => t.classList.remove('selected'));
+  render();
+}
+
+// Init
+render();
+</script>
+</body>
+</html>
